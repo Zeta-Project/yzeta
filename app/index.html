@@ -1,25 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>YFilesZeta</title>
-  
-  <link type="text/css" rel="stylesheet" href="dist/lib.css">
-  
-  <style>
-    html, body, #graphComponent {
-      width: 100%;
-      height: 100%;
-      padding: 0;
-      margin: 0;
-    }
-  </style>
+    <title>YFilesZeta</title>
+
+    <link href="dist/lib.css" rel="stylesheet" type="text/css">
+    <link href="styles/app.css" rel="stylesheet" type="text/css">
 </head>
-<body>
-<div id="graphComponent"></div>
+<body class="has-left has-right">
 
+<aside class="sidebar left">
+    <h1 class="sidebar-header">Samples</h1>
+    <div class="sidebar-content" style="position: relative; padding: 0;">
+        <div id="drag-and-drop-panel"></div>
+    </div>
+</aside>
 
+<aside class="sidebar right">
+    <h1 class="sidebar-header">Samples</h1>
+    <div class="sidebar-content" style="position: relative; padding: 0;">
+        <div id="properties-panel"></div>
+    </div>
+</aside>
 
+<div class="content">
+    <div class="toolbar">
+        <button class="icon-yIconZoomOriginal" data-command="ZoomOriginal"
+                title="Zoom to original size"></button>
+        <button class="icon-yIconZoomFit" data-command="FitContent" title="Fit Content"></button>
+        <span class="separator"></span>
+        <button class="icon-yIconCut" data-command="Cut" title="Cut"></button>
+        <button class="icon-yIconCopy" data-command="Copy" title="Copy"></button>
+        <button class="icon-yIconPaste" data-command="Paste" title="Paste"></button>
+        <span class="separator"></span>
+        <button class="icon-yIconUndo" data-command="Undo" title="Undo"></button>
+        <button class="icon-yIconRedo" data-command="Redo" title="Redo"></button>
+    </div>
 
+    <div id="graphComponent"></div>
+</div>
 
 <script src="dist/lib.js"></script>
 <script src="dist/app.js"></script>
