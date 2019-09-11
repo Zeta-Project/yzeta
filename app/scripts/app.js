@@ -15,25 +15,7 @@ import {
 import {bindCommand} from "./utils/Bindings";
 
 // Tell the library about the license contents
-License.value = {
-  "comment": "7f19c3fe-2087-4629-ad4a-3fd9dfe88ae2",
-  "date": "09/11/2019",
-  "distribution": false,
-  "domains": [
-    "*"
-  ],
-  "expires": "11/11/2019",
-  "fileSystemAllowed": true,
-  "licensefileversion": "1.1",
-  "localhost": true,
-  "oobAllowed": true,
-  "package": "complete",
-  "product": "yFiles for HTML",
-  "type": "eval",
-  "version": "2.2",
-  "watermark": "yFiles HTML Evaluation License (expires in ${license-days-remaining} days)",
-  "key": "c3d6fe78dfdc13bf1213f5b378ae13eb420b296a"
-};
+License.value = require('../../../yFiles-for-HTML-Complete-2.2.0.1-Evaluation/lib/license.json');
 
 // We need to load the yfiles/view-layout-bridge module explicitly to prevent the webpack
 // tree shaker from removing this dependency which is needed for 'morphLayout' in this demo.
