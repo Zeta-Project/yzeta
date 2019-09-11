@@ -1,25 +1,28 @@
 import 'yfiles/yfiles.css';
 
 import {
-  License,
-  GraphComponent,
-  FreeNodePortLocationModel,
-  GraphEditorInputMode,
   Class,
+  FreeNodePortLocationModel,
+  GraphComponent,
+  GraphEditorInputMode,
+  ICommand,
   LayoutExecutor,
+  License,
   Point,
   Rect
 } from 'yfiles'
 
+import {bindCommand} from "./utils/Bindings";
+
 // Tell the library about the license contents
 License.value = {
-  "comment": "58be556f-690c-426d-9470-8c00f780021a",
-  "date": "06/18/2019",
+  "comment": "7f19c3fe-2087-4629-ad4a-3fd9dfe88ae2",
+  "date": "09/11/2019",
   "distribution": false,
   "domains": [
     "*"
   ],
-  "expires": "08/18/2019",
+  "expires": "11/11/2019",
   "fileSystemAllowed": true,
   "licensefileversion": "1.1",
   "localhost": true,
@@ -29,7 +32,7 @@ License.value = {
   "type": "eval",
   "version": "2.2",
   "watermark": "yFiles HTML Evaluation License (expires in ${license-days-remaining} days)",
-  "key": "7135f82cd617f4f66f4c965c801a2878888a6f2c"
+  "key": "c3d6fe78dfdc13bf1213f5b378ae13eb420b296a"
 };
 
 // We need to load the yfiles/view-layout-bridge module explicitly to prevent the webpack
@@ -45,6 +48,7 @@ class YFilesZeta {
   initialize() {
     const graphComponent = new GraphComponent('#graphComponent');
     const graph = graphComponent.graph;
+    graph.undoEngineEnabled = true
 
     const node1 = graph.createNode(new Rect(0, 0, 30, 30));
     const node2 = graph.createNode(new Rect(100, 0, 30, 30));
@@ -65,14 +69,32 @@ class YFilesZeta {
     const le3 = graph.addLabel(edgeAtPorts, 'edgeAtPorts');
 
     graphComponent.inputMode = new GraphEditorInputMode({
-      allowGroupingOperations: true
+      allowGroupingOperations: false,
+
     });
 
     graphComponent.fitGraphBounds();
+
+    // bind toolbar commands
+    this.registerCommands(graphComponent)
   }
 
   constructor() {
     this.initialize();
+  }
+
+  /**
+   * Wires up the UI.
+   * @param {GraphComponent} graphComponent
+   */
+  registerCommands(graphComponent) {
+    bindCommand("button[data-command='Cut']", ICommand.CUT, graphComponent)
+    bindCommand("button[data-command='Copy']", ICommand.COPY, graphComponent)
+    bindCommand("button[data-command='Paste']", ICommand.PASTE, graphComponent)
+    bindCommand("button[data-command='FitContent']", ICommand.FIT_GRAPH_BOUNDS, graphComponent)
+    bindCommand("button[data-command='ZoomOriginal']", ICommand.ZOOM, graphComponent, 1.0)
+    bindCommand("button[data-command='Undo']", ICommand.UNDO, graphComponent)
+    bindCommand("button[data-command='Redo']", ICommand.REDO, graphComponent)
   }
 
 }
