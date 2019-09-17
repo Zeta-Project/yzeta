@@ -13,6 +13,7 @@ import {
 } from 'yfiles'
 
 import {bindCommand} from "./utils/Bindings";
+import {DragAndDrop} from "./DragAndDrop";
 
 // Tell the library about the license contents
 License.value = require('../../../yFiles-for-HTML-Complete-2.2.0.1-Evaluation/lib/license.json');
@@ -51,9 +52,12 @@ class YFilesZeta {
     const le3 = graph.addLabel(edgeAtPorts, 'edgeAtPorts');
 
     graphComponent.inputMode = new GraphEditorInputMode({
-      allowGroupingOperations: false,
-
+        allowGroupingOperations: false,
+        allowCreateNode: false
     });
+
+    // configure and initialize drag and drop panel
+    let dragAndDropPanel = new DragAndDrop(graphComponent);
 
     graphComponent.fitGraphBounds();
 
