@@ -9,6 +9,7 @@ import {
     SimpleNode,
     SvgExport
 } from "yfiles";
+
 import {addClass, removeClass} from "./utils/Bindings";
 import {passiveSupported, pointerEventsSupported} from "./utils/Workarounds";
 
@@ -107,7 +108,7 @@ function addNodeVisual(style, panel) {
             startDrag()
             event.preventDefault()
         },
-        passiveSupported ? { passive: false } : false
+        passiveSupported ? {passive: false} : false
     )
     div.appendChild(img)
     panel.appendChild(div)
