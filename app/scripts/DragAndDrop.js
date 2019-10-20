@@ -64,7 +64,7 @@ function addNodeVisual(style, panel) {
     const startDrag = () => {
         // Create preview node with which the GraphComponent can render a preview during the drag gesture.
         const simpleNode = new SimpleNode();
-        simpleNode.layout = new Rect(0, 0, 40, 40)
+        simpleNode.layout = new Rect(0, 0, 300, 300)
         simpleNode.style = style
 
         // We also want to show a preview of dragged node, while the dragging is not within the GraphComponent.
