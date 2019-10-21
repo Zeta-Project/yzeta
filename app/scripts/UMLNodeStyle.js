@@ -378,6 +378,7 @@ export class UMLNodeStyle extends NodeStyleBase {
      * @param {GraphEditorInputMode} geim The responsible input mode.
      */
     adjustSize(node, geim) {
+        console.log("size adjusting")
         const layout = node.layout
         const minSize = this.getPreferredSize(node)
         const width = Math.max(minSize.width, layout.width)
@@ -977,7 +978,7 @@ export const UMLNodeStyleExtension = Class('UMLNodeStyleExtension', {
 
 /**
  * Listener that handles the serialization of the UML style.
- */
+
 export const UMLNodeStyleSerializationListener = (sender, args) => {
     const item = args.item
     if (item instanceof UMLNodeStyle) {
@@ -993,3 +994,4 @@ export const UMLNodeStyleSerializationListener = (sender, args) => {
 
 // export a default object to be able to map a namespace to this module for serialization
 export default { UMLNodeStyle, UMLNodeStyleExtension }
+ */

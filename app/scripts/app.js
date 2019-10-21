@@ -1,10 +1,10 @@
 import 'yfiles/yfiles.css';
 
 import {
-    Class, CreateEdgeInputMode, EdgeRouter,   EdgeRouterScope,
+    Class, CreateEdgeInputMode, EdgeRouter, EdgeRouterScope,
     FreeNodePortLocationModel,
     GraphComponent,
-    GraphEditorInputMode,
+    GraphEditorInputMode, HierarchicLayout, HierarchicLayoutData,
     ICommand, INode,
     LayoutExecutor,
     License, OrthogonalEdgeEditingContext,
@@ -15,7 +15,7 @@ import {
 import {bindCommand} from "./utils/Bindings";
 import {DragAndDrop} from "./DragAndDrop";
 import * as umlModel from './UMLClassModel.js'
-import UMLStyle, { UMLNodeStyle, UMLNodeStyleSerializationListener } from './UMLNodeStyle.js'
+import {UMLNodeStyle} from './UMLNodeStyle.js'
 // Tell the library about the license contents
 License.value = require('../../../yFiles-for-HTML-Complete-2.2.0.1-Evaluation/lib/license.json');
 
@@ -36,7 +36,7 @@ class YFilesZeta {
 
     constructor() {
         this.initialize();
-        this.buildSampleGraph();
+
     }
 
     initialize() {
@@ -44,7 +44,7 @@ class YFilesZeta {
         const graph = graphComponent.graph;
         graph.undoEngineEnabled = true
 
-        graphComponent.inputMode = this.createInputMode()
+        graphComponent.inputMode = createInputMode()
 
         // configures default styles for newly created graph elements
         graphComponent.graph.nodeDefaults.style = new UMLNodeStyle(new umlModel.UMLClassModel())
@@ -55,67 +55,59 @@ class YFilesZeta {
         // configure and initialize drag and drop panel
         let dragAndDropPanel = new DragAndDrop(graphComponent);
 
-        graphComponent.fitGraphBounds();
+        this.buildSampleGraph();
+
+        // bootstrap the sample graph
+        executeLayout().then(() => {
+            // the sample graph bootstrapping should not be undoable
+            graphComponent.graph.undoEngine.clear()
+        })
+
+        //graphComponent.fitGraphBounds();
 
         // bind toolbar commands
         this.registerCommands(graphComponent)
     }
 
-    /**
-     * Configure interaction.
-     */
-    createInputMode() {
-        const mode = new GraphEditorInputMode({
-            orthogonalEdgeEditingContext: new OrthogonalEdgeEditingContext(),
-            // we want to adjust the size of new nodes before rendering them
-            nodeCreator: (context, graph, location, parent) => {
-                const layout = Rect.fromCenter(location, graph.nodeDefaults.size)
-                const styleInstance = graph.nodeDefaults.getStyleInstance()
-                const node = graph.createNode(parent, layout, styleInstance)
+    buildSampleGraph() {
+        const graph = graphComponent.graph
+        //create a node based on UMLClassModel for storing data and UMLNodeStyle
+        const node1 = graph.createNode({
+            style: new UMLNodeStyle(
+                new umlModel.UMLClassModel({
+                    className: 'Customer',
+                    attributes: ['name', 'address', 'email', 'phone', 'creditcardInfo', 'shippingInfo'],
+                    operations: ['register()', 'login()', 'search()']
+                })
+            )
+        })
+
+        const node2 = graph.createNode({
+            style: new UMLNodeStyle(
+                new umlModel.UMLClassModel({
+                    className: 'Customer',
+                    attributes: ['name', 'address', 'email', 'phone', 'creditcardInfo', 'shippingInfo'],
+                    operations: ['register()', 'login()', 'search()']
+                })
+            )
+        })
+
+        const edge1 = graph.createEdge(node1, node2);
+
+        graph.nodes.forEach(node => {
+            if ( node.style instanceof UMLNodeStyle) {
                 node.style.adjustSize(node, graphComponent.inputMode)
-                return node
-            },
-            allowAddLabel: false
-        })
-
-        // execute a layout after certain gestures
-        mode.moveInputMode.addDragFinishedListener((src, args) => routeEdgesAtSelectedNodes())
-        mode.handleInputMode.addDragFinishedListener((src, args) => routeEdgesAtSelectedNodes())
-
-        // hide the edge creation buttons when the empty canvas was clicked
-        mode.addCanvasClickedListener((src, args) => {
-            graphComponent.currentItem = null
-        })
-
-        // the UMLNodeStyle should handle clicks itself
-        mode.addItemClickedListener((src, args) => {
-            if (INode.isInstance(args.item) && args.item.style instanceof UMLNodeStyle) {
-                args.item.style.nodeClicked(src, args)
             }
         })
 
-        return mode
-    }
+        //const bend1 = graph.addBend(edge1, new Point(330, 15));
 
-    buildSampleGraph() {
-        const graph = graphComponent.graph
-        const node1 = graph.createNode(new Rect(0, 0, 30, 30));
-        const node2 = graph.createNode(new Rect(100, 0, 30, 30));
-        const node3 = graph.createNode(new Rect(300, 300, 60, 30));
+        //const portAtNode1 = graph.addPort(node1);
+        //const portAtNode3 = graph.addPort(2, FreeNodePortLocationModel.NODE_LEFT_ANCHORED);
+        //const edgeAtPorts = graph.createEdge(portAtNode1, portAtNode3);
 
-        const edge1 = graph.createEdge(node1, node2);
-        const edge2 = graph.createEdge(node2, node3);
-
-        const bend1 = graph.addBend(edge2, new Point(330, 15));
-
-        const portAtNode1 = graph.addPort(node1);
-        const portAtNode3 = graph.addPort(node3, FreeNodePortLocationModel.NODE_LEFT_ANCHORED);
-        const edgeAtPorts = graph.createEdge(portAtNode1, portAtNode3);
-
-        const ln1 = graph.addLabel(node1, 'n1');
-        const ln2 = graph.addLabel(node2, 'n2');
-        const ln3 = graph.addLabel(node3, 'n3');
-        const le3 = graph.addLabel(edgeAtPorts, 'edgeAtPorts');
+        //const ln1 = graph.addLabel(node1, 'n1');
+        //const ln2 = graph.addLabel(node2, 'n2');
     }
 
     /**
@@ -132,6 +124,45 @@ class YFilesZeta {
         bindCommand("button[data-command='Redo']", ICommand.REDO, graphComponent)
     }
 
+}
+
+/**
+ * Configure interaction.
+ */
+function createInputMode() {
+    console.log("createMode")
+    const mode = new GraphEditorInputMode({
+        orthogonalEdgeEditingContext: new OrthogonalEdgeEditingContext(),
+        // we want to adjust the size of new nodes before rendering them
+        nodeCreator: (context, graph, location, parent) => {
+            const layout = Rect.fromCenter(location, graph.nodeDefaults.size)
+            const styleInstance = graph.nodeDefaults.getStyleInstance()
+            console.log(styleInstance.toString() + " NodeCreator")
+            const node = graph.createNode(parent, layout, styleInstance)
+            node.style.adjustSize(node, graphComponent.inputMode)
+
+            return node
+        },
+        allowAddLabel: false
+    })
+
+    // execute a layout after certain gestures
+    mode.moveInputMode.addDragFinishedListener((src, args) => routeEdgesAtSelectedNodes())
+    mode.handleInputMode.addDragFinishedListener((src, args) => routeEdgesAtSelectedNodes())
+
+    // hide the edge creation buttons when the empty canvas was clicked
+    mode.addCanvasClickedListener((src, args) => {
+        graphComponent.currentItem = null
+    })
+
+    // the UMLNodeStyle should handle clicks itself
+    mode.addItemClickedListener((src, args) => {
+        if (INode.isInstance(args.item) && args.item.style instanceof UMLNodeStyle) {
+            args.item.style.nodeClicked(src, args)
+        }
+    })
+
+    return mode
 }
 
 /**
@@ -173,6 +204,52 @@ function routeEdge(affectedEdge) {
         updateContentRect: false
     })
     layoutExecutor.start()
+}
+
+/**
+ * Sets new HierarchicLayout, target nodes are drawn on top
+ * This method gets executed after building the sampleGraph since the nodes got no coordinates
+ * @returns {Promise<any>}
+ */
+function executeLayout() {
+    // configures the hierarchic layout
+    const layout = new HierarchicLayout({
+        orthogonalRouting: true
+    })
+    layout.edgeLayoutDescriptor.minimumFirstSegmentLength = 25
+    layout.edgeLayoutDescriptor.minimumLastSegmentLength = 25
+    layout.edgeLayoutDescriptor.minimumDistance = 25
+
+    const layoutData = new HierarchicLayoutData({
+        // mark all inheritance edges (generalization, realization) as directed so their target nodes
+        // will be placed above their source nodes
+        // all other edges are treated as undirected
+        edgeDirectedness: edge => ( 0),
+        // combine all inheritance edges (generalization, realization) in edge groups according to
+        // their line type
+        // do not group the other edges
+        sourceGroupIds: edge => getGroupId(edge, 'src'),
+        targetGroupIds: edge => getGroupId(edge, 'tgt')
+    })
+
+    return graphComponent.morphLayout(layout, '500ms', layoutData)
+}
+
+/**
+ * Returns an edge group id according to the edge style.
+ * @param {IEdge} edge
+ * @param {string} marker
+ * @return {object|null}
+ */
+function getGroupId(edge, marker) {
+    /*
+    if (edge.style instanceof PolylineEdgeStyle) {
+        const edgeStyle = edge.style
+        return isInheritance(edgeStyle) ? edgeStyle.stroke.dashStyle + marker : null
+    }
+
+     */
+    return null
 }
 
 new YFilesZeta();
