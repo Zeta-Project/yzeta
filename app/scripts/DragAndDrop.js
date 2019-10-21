@@ -36,15 +36,15 @@ export class DragAndDrop {
 function initializeDragAndDropPanel(graphComponent) {
     // retrieve the panel element
     const panel = document.getElementById('drag-and-drop-panel')
-
     // prepare node styles for the palette
     const defaultNodeStyle = graphComponent.graph.nodeDefaults.style
     const nodeStyles = [defaultNodeStyle]
 
     // add a visual for each node style to the palette
-    nodeStyles.forEach(style => {
-        addNodeVisual(style, panel)
+    nodeStyles.forEach((style) => {
+        addNodeVisual(style, panel, graphComponent)
     })
+
 }
 
 /**
@@ -52,7 +52,7 @@ function initializeDragAndDropPanel(graphComponent) {
  * @param {INodeStyle} style
  * @param {HTMLElement} panel
  */
-function addNodeVisual(style, panel) {
+function addNodeVisual(style, panel, graphComponent) {
     // Create the HTML element for the visual.
     const div = document.createElement('div')
     div.setAttribute('style', 'width: 40px; height: 40px; margin: 10px auto; cursor: grab;')
@@ -64,8 +64,10 @@ function addNodeVisual(style, panel) {
     const startDrag = () => {
         // Create preview node with which the GraphComponent can render a preview during the drag gesture.
         const simpleNode = new SimpleNode();
-        simpleNode.layout = new Rect(0, 0, 300, 300)
+        simpleNode.layout = new Rect(0, 0, 150,50) //created node size
         simpleNode.style = style
+
+        simpleNode.style.adjustSize(simpleNode, graphComponent.inputMode)
 
         // We also want to show a preview of dragged node, while the dragging is not within the GraphComponent.
         // For this, we can provide an element that will be placed at the mouse position during the drag gesture.
@@ -125,7 +127,7 @@ function createNodeVisual(style) {
     const exportGraph = exportComponent.graph
 
     // we create a node in this GraphComponent that should be exported as SVG
-    exportGraph.createNode(new Rect(0, 0, 40, 40), style)
+    exportGraph.createNode(new Rect(0, 0, 40, 40), style) // panel node size
     exportComponent.updateContentRect(new Insets(5))
 
     // the SvgExport can export the content of any GraphComponent

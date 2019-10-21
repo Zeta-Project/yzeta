@@ -79,7 +79,7 @@ export class UMLClassModel {
 
 /**
  * Markup extension needed to (de-)serialize the UML model.
- */
+
 export const UMLClassModelExtension = Class('UMLClassModelExtension', {
     $extends: MarkupExtension,
 
@@ -186,10 +186,11 @@ export const UMLClassModelExtension = Class('UMLClassModelExtension', {
         return umlClassModel
     }
 })
+ */
 
 /**
  * Listener that handles the serialization of the UML model.
- */
+
 export const UMLClassModelSerializationListener = (sender, args) => {
     const item = args.item
     if (item instanceof UMLClassModel) {
@@ -206,3 +207,4 @@ export const UMLClassModelSerializationListener = (sender, args) => {
         args.handled = true
     }
 }
+ */
