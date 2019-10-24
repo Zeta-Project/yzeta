@@ -12,6 +12,9 @@ import {
 
 import {addClass, removeClass} from "./utils/Bindings";
 import {passiveSupported, pointerEventsSupported} from "./utils/Workarounds";
+import {UMLNodeStyle} from './UMLNodeStyle.js';
+import * as umlModel from "./UMLClassModel";
+import {UMLClassModel} from "./UMLClassModel";
 
 export class DragAndDrop {
 
@@ -51,6 +54,7 @@ function initializeDragAndDropPanel(graphComponent) {
  * Creates and adds a visual for the given style in the drag and drop panel.
  * @param {INodeStyle} style
  * @param {HTMLElement} panel
+ * @param graphComponent
  */
 function addNodeVisual(style, panel, graphComponent) {
     // Create the HTML element for the visual.
@@ -64,10 +68,8 @@ function addNodeVisual(style, panel, graphComponent) {
     const startDrag = () => {
         // Create preview node with which the GraphComponent can render a preview during the drag gesture.
         const simpleNode = new SimpleNode();
-        simpleNode.layout = new Rect(0, 0, 150,50) //created node size
         simpleNode.style = style
-
-        simpleNode.style.adjustSize(simpleNode, graphComponent.inputMode)
+        simpleNode.layout = new Rect(0, 0, 150,50) //created node size && preview on graphComponent
 
         // We also want to show a preview of dragged node, while the dragging is not within the GraphComponent.
         // For this, we can provide an element that will be placed at the mouse position during the drag gesture.
@@ -127,7 +129,7 @@ function createNodeVisual(style) {
     const exportGraph = exportComponent.graph
 
     // we create a node in this GraphComponent that should be exported as SVG
-    exportGraph.createNode(new Rect(0, 0, 40, 40), style) // panel node size
+    exportGraph.createNode(new Rect(0, 0, 100, 150), style) // panel node size
     exportComponent.updateContentRect(new Insets(5))
 
     // the SvgExport can export the content of any GraphComponent
