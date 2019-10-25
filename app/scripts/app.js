@@ -40,6 +40,10 @@ class YFilesZeta {
     }
 
     initialize() {
+
+        const localText = fetch("diagramm.JSON");
+        console.log("Local JSON: " + localText);
+
         graphComponent = new GraphComponent('#graphComponent');
         const graph = graphComponent.graph;
         graph.undoEngineEnabled = true
