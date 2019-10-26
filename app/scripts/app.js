@@ -16,6 +16,11 @@ import {bindCommand} from "./utils/Bindings";
 import {DragAndDrop} from "./DragAndDrop";
 import * as umlModel from './UMLClassModel.js'
 import {UMLNodeStyle} from './UMLNodeStyle.js'
+//JSON workaround until REST GET functions
+import shapeJson from '../graphData/shape.js';
+import diagramJson from '../graphData/diagram.js';
+import styleJson from '../graphData/style.js';
+
 // Tell the library about the license contents
 License.value = require('../../../yFiles-for-HTML-Complete-2.2.0.2/lib/license.json');
 
@@ -41,8 +46,12 @@ class YFilesZeta {
 
     initialize() {
 
-        const localText = fetch("diagramm.JSON");
-        console.log("Local JSON: " + localText);
+//myJson.diagrams[0].name
+
+
+        const text = JSON.stringify(shapeJson.shapes.edges);
+
+        console.log("Local JSON: " + text);
 
         graphComponent = new GraphComponent('#graphComponent');
         const graph = graphComponent.graph;
