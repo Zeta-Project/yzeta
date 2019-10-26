@@ -1,4 +1,4 @@
-{
+export default {
   "shapes": {
     "nodes": [
       {
@@ -189,9 +189,9 @@
                 "id": "UniqueID"
               }
             }
-            ]
           }
-        ]
+          ]
       }
-    }
-    }
+      ]
+  }
+}
