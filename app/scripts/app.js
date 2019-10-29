@@ -40,6 +40,7 @@ class YFilesZeta {
 
 
     constructor() {
+        this.getBrowserData();
         this.initialize();
 
     }
@@ -47,16 +48,21 @@ class YFilesZeta {
     initialize() {
 
 //myJson.diagrams[0].name
+        //maybe build configuration object to quickly access attributes
+        //
+        //diagram: show selection of witch project to access --> yfiles inherited methods?
+        //shape: build nodes and edges to show on Palette
+        //style?? suspiciously scarce options
+        //
+        //const text = JSON.stringify(shapeJson.shapes.edges);
+        //console.log("Local JSON: " + text);
 
 
-        const text = JSON.stringify(shapeJson.shapes.edges);
 
-        console.log("Local JSON: " + text);
 
         graphComponent = new GraphComponent('#graphComponent');
         const graph = graphComponent.graph;
         graph.undoEngineEnabled = true
-
         graphComponent.inputMode = createInputMode()
 
         // configures default styles for newly created graph elements
@@ -67,8 +73,6 @@ class YFilesZeta {
 
         // configure and initialize drag and drop panel
         let dragAndDropPanel = new DragAndDrop(graphComponent);
-        dragAndDropPanel
-
         this.buildSampleGraph();
 
         // bootstrap the sample graph
@@ -113,15 +117,6 @@ class YFilesZeta {
                 node.style.adjustSize(node, graphComponent.inputMode)
             }
         })
-
-        //const bend1 = graph.addBend(edge1, new Point(330, 15));
-
-        //const portAtNode1 = graph.addPort(node1);
-        //const portAtNode3 = graph.addPort(2, FreeNodePortLocationModel.NODE_LEFT_ANCHORED);
-        //const edgeAtPorts = graph.createEdge(portAtNode1, portAtNode3);
-
-        //const ln1 = graph.addLabel(node1, 'n1');
-        //const ln2 = graph.addLabel(node2, 'n2');
     }
 
     /**
@@ -138,6 +133,21 @@ class YFilesZeta {
         bindCommand("button[data-command='Redo']", ICommand.REDO, graphComponent)
     }
 
+    async getBrowserData() {
+
+        //const jData =
+
+        //const response = await fetch("graphData.json")
+        //const data = await response.json()
+
+        //console.log(data)
+        //console.log(jData.shapes[0])
+
+        //const response = await fetch("http://zeta-dev.syslab.in.htwg-konstanz.de/rest/v1/meta-models");
+        //const jData = await response.json()
+        //const jData = JSON.parse(response)
+        //console.log(jData.toString())
+    }
 }
 
 /**
