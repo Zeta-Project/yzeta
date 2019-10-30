@@ -160,17 +160,9 @@ function createInputMode() {
     console.log("createMode")
     const mode = new GraphEditorInputMode({
         orthogonalEdgeEditingContext: new OrthogonalEdgeEditingContext(),
-        // we want to adjust the size of new nodes before rendering them
-        nodeCreator: (context, graph, location, parent) => {
-            const layout = Rect.fromCenter(location, graph.nodeDefaults.size)
-            const styleInstance = graph.nodeDefaults.getStyleInstance()
-            console.log(styleInstance.toString() + " NodeCreator")
-            const node = graph.createNode(parent, layout, styleInstance)
-            node.style.adjustSize(node, graphComponent.inputMode)
-
-            return node
-        },
-        allowAddLabel: false
+        allowAddLabel: false,
+        allowGroupingOperations: false,
+        allowCreateNode: false
     })
 
     // add input mode that handles the edge creations buttons
@@ -299,8 +291,8 @@ function buildGraphFromDefinition(graph) {
     });
 
     //connect each class
-    var source = null;
-    var target = null;
+    let source = null;
+    let target = null;
     //const nodes = graph.getNodeArray() --> not a function???
     references.forEach(function(reference) {
         nodeList.forEach(function(node) {
@@ -312,7 +304,7 @@ function buildGraphFromDefinition(graph) {
             }
         })
         if(source != null && target != null) {
-            var edge = graph.createEdge(source, target)
+            const edge = graph.createEdge(source, target);
             // add a label to the node
             if(reference.name != '') {
                 graph.addLabel(edge, reference.name)
