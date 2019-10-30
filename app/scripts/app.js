@@ -5,9 +5,9 @@ import {
     FreeNodePortLocationModel,
     GraphComponent,
     GraphEditorInputMode, HierarchicLayout, HierarchicLayoutData,
-    ICommand, INode,
+    ICommand, IGraph as graph, INode,
     LayoutExecutor,
-    License, OrthogonalEdgeEditingContext,
+    License, List, OrthogonalEdgeEditingContext,
     Point, PolylineEdgeRouterData,
     Rect, SimpleNode, Size
 } from 'yfiles'
@@ -16,6 +16,8 @@ import {bindCommand} from "./utils/Bindings";
 import {DragAndDrop} from "./DragAndDrop";
 import * as umlModel from './UMLClassModel.js'
 import {UMLNodeStyle} from './UMLNodeStyle.js'
+import UMLContextButtonsInputMode from './UMLContextButtonsInputMode.js'
+import definition from '../graphData/definition.js'
 //JSON workaround until REST GET functions
 import shapeJson from '../graphData/shape.js';
 import diagramJson from '../graphData/diagram.js';
@@ -73,7 +75,8 @@ class YFilesZeta {
 
         // configure and initialize drag and drop panel
         let dragAndDropPanel = new DragAndDrop(graphComponent);
-        this.buildSampleGraph();
+        buildGraphFromDefinition(graph)
+        //this.buildSampleGraph();
 
         // bootstrap the sample graph
         executeLayout().then(() => {
@@ -170,6 +173,11 @@ function createInputMode() {
         allowAddLabel: false
     })
 
+    // add input mode that handles the edge creations buttons
+    const umlContextButtonsInputMode = new UMLContextButtonsInputMode()
+    umlContextButtonsInputMode.priority = mode.clickInputMode.priority - 1
+    mode.add(umlContextButtonsInputMode)
+
     // execute a layout after certain gestures
     mode.moveInputMode.addDragFinishedListener((src, args) => routeEdgesAtSelectedNodes())
     mode.handleInputMode.addDragFinishedListener((src, args) => routeEdgesAtSelectedNodes())
@@ -258,6 +266,68 @@ function executeLayout() {
 
     return graphComponent.morphLayout(layout, '500ms', layoutData)
 }
+
+function buildGraphFromDefinition(graph) {
+
+    const classes = definition.classes
+    const references = definition.references
+
+    const nodeList = new List()
+
+    //create a node for each class
+    //fill them with existing attributes, operations and names
+    classes.forEach(function(node) {
+        const attributeNames = new Array()
+        for(let i = 0; i < node.attributes.length; i++) {
+            attributeNames[i] = node.attributes[i].name
+        }
+        const methodNames = new Array()
+        for(let i = 0; i < node.methods.length; i++) {
+            methodNames[i] = node.methods[i].name
+        }
+
+        nodeList.add(graph.createNode({
+            style: new UMLNodeStyle(
+                new umlModel.UMLClassModel({
+                    className: node.name.toString(),
+                    attributes: attributeNames,
+                    operations: methodNames
+                })
+            )
+        }))
+        console.log(nodeList.size)
+    });
+
+    //connect each class
+    var source = null;
+    var target = null;
+    //const nodes = graph.getNodeArray() --> not a function???
+    references.forEach(function(reference) {
+        nodeList.forEach(function(node) {
+            if(node.style.model.className == reference.sourceClassName) {
+                source = node
+            }
+            if(node.style.model.className == reference.targetClassName) {
+                target = node
+            }
+        })
+        if(source != null && target != null) {
+            var edge = graph.createEdge(source, target)
+            // add a label to the node
+            if(reference.name != '') {
+                graph.addLabel(edge, reference.name)
+            }
+
+        }
+        source = null
+        target = null
+
+    })
+
+
+}
+
+
 
 /**
  * Returns an edge group id according to the edge style.
