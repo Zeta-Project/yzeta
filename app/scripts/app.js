@@ -1,7 +1,7 @@
 import 'yfiles/yfiles.css';
 
 import {
-    Class, CreateEdgeInputMode, EdgeRouter, EdgeRouterScope,
+    Class, CreateEdgeInputMode, EdgeRouter, EdgeRouterScope, Fill,
     FreeNodePortLocationModel,
     GraphComponent,
     GraphEditorInputMode, HierarchicLayout, HierarchicLayoutData,
@@ -9,7 +9,7 @@ import {
     LayoutExecutor,
     License, List, OrthogonalEdgeEditingContext,
     Point, PolylineEdgeRouterData,
-    Rect, SimpleNode, Size
+    Rect, SimpleNode, Size, SolidColorFill
 } from 'yfiles'
 
 import {bindCommand} from "./utils/Bindings";
@@ -260,10 +260,8 @@ function executeLayout() {
 }
 
 function buildGraphFromDefinition(graph) {
-
     const classes = definition.classes
     const references = definition.references
-
     const nodeList = new List()
 
     //create a node for each class
@@ -277,8 +275,7 @@ function buildGraphFromDefinition(graph) {
         for(let i = 0; i < node.methods.length; i++) {
             methodNames[i] = node.methods[i].name
         }
-
-        nodeList.add(graph.createNode({
+        var tempNode = (graph.createNode({
             style: new UMLNodeStyle(
                 new umlModel.UMLClassModel({
                     className: node.name.toString(),
@@ -287,8 +284,23 @@ function buildGraphFromDefinition(graph) {
                 })
             )
         }))
+        if (node.abstractness == true) {
+            const isAbstract = tempNode.style.model.constraint === 'abstract'
+            tempNode.style.model.constraint = isAbstract ? '' : 'abstract'
+            tempNode.style.model.stereotype = ''
+            tempNode.style.fill = isAbstract ? new SolidColorFill(0x60, 0x7d, 0x8b) : Fill.CRIMSON
+        }
+        nodeList.add(tempNode)
         console.log(nodeList.size)
     });
+
+
+
+    graph.nodes.forEach(node => {
+        if ( node.style instanceof UMLNodeStyle) {
+            node.style.adjustSize(node, graphComponent.inputMode)
+        }
+    })
 
     //connect each class
     let source = null;

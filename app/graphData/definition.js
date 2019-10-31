@@ -4,7 +4,7 @@ export default {
     {
         "name": "Place",
         "description": "",
-        "abstractness": false,
+        "abstractness": true,
         "superTypeNames": [],
         "inputReferenceNames": [
             "toPlace",
