@@ -240,9 +240,9 @@ function executeLayout() {
     const layout = new HierarchicLayout({
         orthogonalRouting: true
     })
-    layout.edgeLayoutDescriptor.minimumFirstSegmentLength = 25
-    layout.edgeLayoutDescriptor.minimumLastSegmentLength = 25
-    layout.edgeLayoutDescriptor.minimumDistance = 25
+    layout.edgeLayoutDescriptor.minimumFirstSegmentLength = 100
+    layout.edgeLayoutDescriptor.minimumLastSegmentLength = 100
+    layout.edgeLayoutDescriptor.minimumDistance = 100
 
     const layoutData = new HierarchicLayoutData({
         // mark all inheritance edges (generalization, realization) as directed so their target nodes

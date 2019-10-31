@@ -33,14 +33,14 @@ export default {
         ],
         "methods": [
             {
-                "name": "",
+                "name": "something",
                 "parameters": [],
                 "description": "",
                 "returnType": "String",
                 "code": ""
             },
             {
-                "name": "",
+                "name": "somethingElse",
                 "parameters": [],
                 "description": "",
                 "returnType": "String",
