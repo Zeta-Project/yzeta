@@ -14,6 +14,7 @@ import {
 
 import {bindCommand} from "./utils/Bindings";
 import {DragAndDrop} from "./DragAndDrop";
+import {DragAndDropFunction} from "./DragAndDropFunction";
 import * as umlModel from './UMLClassModel.js'
 import {UMLNodeStyle} from './UMLNodeStyle.js'
 import UMLContextButtonsInputMode from './UMLContextButtonsInputMode.js'
@@ -74,7 +75,10 @@ class YFilesZeta {
         graphComponent.graph.nodeDefaults.size = new Size(125, 100)
 
         // configure and initialize drag and drop panel
-        let dragAndDropPanel = new DragAndDrop(graphComponent);
+        //let dragAndDropPanel = new DragAndDrop(graphComponent);
+        let dragAndDropPanel2 = new DragAndDropFunction(GraphComponent);
+
+
         buildGraphFromDefinition(graph)
         //this.buildSampleGraph();
 
