@@ -22,6 +22,6 @@
     "@babel/polyfill": "^7.4.0"
   },
   "dependencies": {
-    "yfiles": "../yFiles-for-HTML-Complete-2.2.0.1-Evaluation/lib/es-modules/"
+    "yfiles": "../yFiles-for-HTML-Complete-2.2.0.2/lib/es-modules/"
   }
 }
