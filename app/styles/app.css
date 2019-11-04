@@ -193,7 +193,7 @@ body {
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 250px;
+    width: 210px;
     box-sizing: border-box;
     background: #f7f7f7;
     z-index: 15;
@@ -467,4 +467,8 @@ body {
 
 .yfiles-drag.hidden {
     opacity: 0;
+}
+
+.demo-dndPanelItem {
+    margin: 10px auto;
 }

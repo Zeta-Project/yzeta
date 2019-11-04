@@ -1,10 +1,10 @@
 import 'yfiles/yfiles.css';
 
 import {
-    Class, CreateEdgeInputMode, EdgeRouter, EdgeRouterScope, Fill,
+    Class, CreateEdgeInputMode, EdgeRouter, EdgeRouterScope, Fill, GridSnapTypes,
     FreeNodePortLocationModel,
     GraphComponent,
-    GraphEditorInputMode, HierarchicLayout, HierarchicLayoutData,
+    GraphEditorInputMode, GraphSnapContext, HierarchicLayout, HierarchicLayoutData,
     ICommand, IGraph as graph, INode,
     LayoutExecutor,
     License, List, OrthogonalEdgeEditingContext,
@@ -14,6 +14,7 @@ import {
 
 import {bindCommand} from "./utils/Bindings";
 import {DragAndDrop} from "./DragAndDrop";
+import {DragAndDropFunction} from "./DragAndDropFunction";
 import * as umlModel from './UMLClassModel.js'
 import {UMLNodeStyle} from './UMLNodeStyle.js'
 import UMLContextButtonsInputMode from './UMLContextButtonsInputMode.js'
@@ -74,7 +75,10 @@ class YFilesZeta {
         graphComponent.graph.nodeDefaults.size = new Size(125, 100)
 
         // configure and initialize drag and drop panel
-        let dragAndDropPanel = new DragAndDrop(graphComponent);
+       //let dragAndDropPanel = new DragAndDrop(graphComponent);
+        let dragAndDropPanel2 = new DragAndDropFunction(graphComponent);
+
+
         buildGraphFromDefinition(graph)
         //this.buildSampleGraph();
 
@@ -162,7 +166,16 @@ function createInputMode() {
         orthogonalEdgeEditingContext: new OrthogonalEdgeEditingContext(),
         allowAddLabel: false,
         allowGroupingOperations: false,
-        allowCreateNode: false
+        allowCreateNode: false,
+        snapContext: new GraphSnapContext({
+            nodeToNodeDistance: 30,
+            nodeToEdgeDistance: 20,
+            snapOrthogonalMovement: false,
+            snapDistance: 10,
+            snapSegmentsToSnapLines: true,
+            snapBendsToSnapLines: true,
+            gridSnapType: GridSnapTypes.ALL
+        })
     })
 
     // add input mode that handles the edge creations buttons
