@@ -189,17 +189,13 @@ body {
     color: #333333;
 }
 
-
-
-/* von hier */
-
 .header-zeta {
     position: absolute;
     top: 0;
     height: 40px;
     left: 0;
     right: 0;
-    background-color: #FF0066;
+    background-color: #4b4a4d;
     color: white;
     transition: padding-left 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0s;
 }
@@ -261,7 +257,7 @@ body {
         line-height: 20px;
     }
 }
-/*  bis hier */
+
 
 .sidebar {
     margin: 15px;
@@ -415,7 +411,6 @@ body {
     top: 40px;
     left: 0;
     right: 0;
-    height: 40px;
     line-height: 40px;
     padding: 0 5px;
     box-sizing: border-box;
@@ -505,8 +500,7 @@ body {
 }
 
 .yfiles-svgpanel {
-    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAIElEQVQoU2NkIBIwEqmOgT4K/zMwYNpEH6uxBgT1rQYA7GUBCwZtgBYAAAAASUVORK5CYII=") repeat;
-    border-bottom: #333333 1px solid;
+        border-bottom: #333333 1px solid;
 }
 
 .content {
@@ -520,6 +514,7 @@ body {
 }
 
 #graphComponent {
+
     position: absolute;
     left: 0;
     top: 80px;
@@ -527,7 +522,11 @@ body {
     bottom: 0;
     background-color: #ffffff;
 }
-
+/* dotted grid
+.yfiles-canvascomponent-svg{
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAIElEQVQoU2NkIBIwEqmOgT4K/zMwYNpEH6uxBgT1rQYA7GUBCwZtgBYAAAAASUVORK5CYII=") repeat;
+}
+*/
 @media screen and (max-height: 500px) {
     #graphComponent {
         top: 60px;
