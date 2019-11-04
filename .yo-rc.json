@@ -1,7 +1,7 @@
 {
   "generator-yfiles-app": {
     "promptValues": {
-      "yfilesPath": "../yFiles-for-HTML-Complete-2.2.0.1-Evaluation/",
+      "yfilesPath": "../yFiles-for-HTML-Complete-2.2.0.2/",
       "moduleType": "Local NPM dependency (recommended)",
       "language": "ES6",
       "advancedOptions": [
@@ -15,6 +15,6 @@
     "libPath": "app/lib",
     "stylesPath": "app/styles",
     "language": "es6",
-    "licenseContent": "{\n  \"comment\": \"58be556f-690c-426d-9470-8c00f780021a\",\n  \"date\": \"06/18/2019\",\n  \"distribution\": false,\n  \"domains\": [\n    \"*\"\n  ],\n  \"expires\": \"08/18/2019\",\n  \"fileSystemAllowed\": true,\n  \"licensefileversion\": \"1.1\",\n  \"localhost\": true,\n  \"oobAllowed\": true,\n  \"package\": \"complete\",\n  \"product\": \"yFiles for HTML\",\n  \"type\": \"eval\",\n  \"version\": \"2.2\",\n  \"watermark\": \"yFiles HTML Evaluation License (expires in ${license-days-remaining} days)\",\n  \"key\": \"7135f82cd617f4f66f4c965c801a2878888a6f2c\"\n}"
+    "licenseContent": "{\n  \"company\": \"Hochschule Konstanz Technik, Wirtschaft und Gestaltung - Fakultät Informatik\",\n  \"contact\": \"Markus Eiglsperger\",\n  \"date\": \"10/21/2019\",\n  \"distribution\": false,\n  \"domains\": [\n    \"*\"\n  ],\n  \"email\": \"meiglspe@htwg-konstanz.de\",\n  \"fileSystemAllowed\": true,\n  \"licensefileversion\": \"1.1\",\n  \"localhost\": true,\n  \"oobAllowed\": true,\n  \"package\": \"complete\",\n  \"product\": \"yFiles for HTML\",\n  \"projectname\": \"Arbeitsgruppe Markus Eiglsperger\",\n  \"subscription\": \"12/31/2020\",\n  \"type\": \"project\",\n  \"version\": \"2.2\",\n  \"watermark\": \"yFiles HTML Development License\",\n  \"key\": \"9f436702057820d19a9636698b196f271c347952\"\n}"
   }
 }

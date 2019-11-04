@@ -268,7 +268,7 @@ body {
     position: absolute;
     top: 90px;
     bottom: 30px;
-    width: 200px;
+    width: 210px;
     box-sizing: border-box;
     background: #f7f7f7;
     z-index: 15;
@@ -532,4 +532,18 @@ body {
     #graphComponent {
         top: 60px;
     }
+}
+
+.yfiles-drag {
+    z-index: 15;
+    opacity: 0.35;
+    transition: opacity .2s ease-in-out;
+}
+
+.yfiles-drag.hidden {
+    opacity: 0;
+}
+
+.dndPanelItem {
+    margin: 10px auto;
 }
