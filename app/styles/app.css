@@ -469,6 +469,6 @@ body {
     opacity: 0;
 }
 
-.demo-dndPanelItem {
+.dndPanelItem {
     margin: 10px auto;
 }

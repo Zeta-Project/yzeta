@@ -1,7 +1,7 @@
 import 'yfiles/yfiles.css';
 
 import {
-    Class, CreateEdgeInputMode, EdgeRouter, EdgeRouterScope, Fill, GridSnapTypes,
+    Class, EdgeRouter, EdgeRouterScope, Fill, GridSnapTypes,
     FreeNodePortLocationModel,
     GraphComponent,
     GraphEditorInputMode, GraphSnapContext, HierarchicLayout, HierarchicLayoutData,
@@ -13,8 +13,8 @@ import {
 } from 'yfiles'
 
 import {bindCommand} from "./utils/Bindings";
+import {DragAndDrop_old} from "./DragAndDrop_old";
 import {DragAndDrop} from "./DragAndDrop";
-import {DragAndDropFunction} from "./DragAndDropFunction";
 import * as umlModel from './UMLClassModel.js'
 import {UMLNodeStyle} from './UMLNodeStyle.js'
 import UMLContextButtonsInputMode from './UMLContextButtonsInputMode.js'
@@ -74,9 +74,9 @@ class YFilesZeta {
         graphComponent.graph.nodeDefaults.shareStyleInstance = false
         graphComponent.graph.nodeDefaults.size = new Size(125, 100)
 
-        // configure and initialize drag and drop panel
-       //let dragAndDropPanel = new DragAndDrop(graphComponent);
-        let dragAndDropPanel2 = new DragAndDropFunction(graphComponent);
+        // configure and initialize drag and drop panel (old and new implementation)
+       //let dragAndDropPanel = new DragAndDrop_old(graphComponent);
+        let dragAndDropPanel = new DragAndDrop(graphComponent);
 
 
         buildGraphFromDefinition(graph)
