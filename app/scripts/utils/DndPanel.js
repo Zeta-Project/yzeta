@@ -90,7 +90,7 @@ export class DragAndDropPanel {
     }
 
     // Create the nodes that specify the visualizations for the panel.
-    const items = itemFactory()
+    const items = itemFactory
 
     // Convert the nodes into plain visualizations
     const graphComponent = new GraphComponent()
@@ -117,7 +117,9 @@ export class DragAndDropPanel {
 
     const originalNode = INode.isInstance(original) ? original : original.element
     const node = graph.createNode(
-      originalNode.layout.toRect(),
+      new Rect(0,0,100,50),
+      // enable instead of new Rect to show the whole Node
+      //originalNode.layout.toRect(),
       originalNode.style,
       originalNode.tag
     )
