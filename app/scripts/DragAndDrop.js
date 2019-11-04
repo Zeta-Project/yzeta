@@ -29,6 +29,7 @@ export class DragAndDrop {
         // When dragging the node within the GraphComponent, we want to show a preview of that node.
         nodeDropInputMode.showPreview = true
 
+
         initializeDragAndDropPanel(graphComponent)
     }
 }
@@ -59,7 +60,7 @@ function initializeDragAndDropPanel(graphComponent) {
 function addNodeVisual(style, panel, graphComponent) {
     // Create the HTML element for the visual.
     const div = document.createElement('div')
-    div.setAttribute('style', 'width: 40px; height: 40px; margin: 10px auto; cursor: grab;')
+    div.setAttribute('style', 'width: 110px; height: 50px; margin: 10px auto; cursor: grab;')
     const img = document.createElement('img')
     img.setAttribute('style', 'width: auto; height: auto;')
     // Create a visual for the style.
