@@ -145,6 +145,7 @@ class YFilesZeta {
             graphComponent.inputMode.snapContext.enabled = snappingEnabled
             graphComponent.inputMode.labelSnapContext.enabled = snappingEnabled
         })
+        bindAction("button[data-command='Layout']", executeLayout)
     }
 
     async getBrowserData() {
@@ -195,8 +196,8 @@ function createInputMode() {
     mode.add(umlContextButtonsInputMode)
 
     // execute a layout after certain gestures
-    mode.moveInputMode.addDragFinishedListener((src, args) => routeEdgesAtSelectedNodes())
-    mode.handleInputMode.addDragFinishedListener((src, args) => routeEdgesAtSelectedNodes())
+   mode.moveInputMode.addDragFinishedListener((src, args) => routeEdgesAtSelectedNodes())
+   mode.handleInputMode.addDragFinishedListener((src, args) => routeEdgesAtSelectedNodes())
 
     // hide the edge creation buttons when the empty canvas was clicked
     mode.addCanvasClickedListener((src, args) => {
