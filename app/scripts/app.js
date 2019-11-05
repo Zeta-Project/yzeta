@@ -9,7 +9,7 @@ import {
     LayoutExecutor,
     License, List, OrthogonalEdgeEditingContext,
     Point, PolylineEdgeRouterData,
-    Rect, SimpleNode, Size, SolidColorFill
+    Rect, SimpleNode, Size, SolidColorFill, LabelSnapContext
 } from 'yfiles'
 
 import {bindAction, bindCommand} from "./utils/Bindings";
@@ -94,6 +94,7 @@ class YFilesZeta {
         this.registerCommands(graphComponent)
     }
 
+    // TODO: remove unused method
     buildSampleGraph() {
         const graph = graphComponent.graph
         //create a node based on UMLClassModel for storing data and UMLNodeStyle
@@ -173,6 +174,9 @@ function createInputMode() {
         allowAddLabel: false,
         allowGroupingOperations: false,
         allowCreateNode: false,
+        labelSnapContext: new LabelSnapContext({
+            enabled: false
+        }),
         snapContext: new GraphSnapContext({
             nodeToNodeDistance: 30,
             nodeToEdgeDistance: 20,
@@ -180,7 +184,8 @@ function createInputMode() {
             snapDistance: 10,
             snapSegmentsToSnapLines: true,
             snapBendsToSnapLines: true,
-            gridSnapType: GridSnapTypes.ALL
+            gridSnapType: GridSnapTypes.ALL,
+            enabled: false
         })
     })
 
