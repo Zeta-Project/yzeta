@@ -203,7 +203,7 @@ export class DragAndDropPanel {
     visual.removeAttribute('clip-path')
 
     const div = document.createElement('div')
-    div.setAttribute('class', 'demo-dndPanelItem')
+    div.setAttribute('class', 'dndPanelItem')
     div.appendChild(visual)
     div.style.setProperty('width', visual.getAttribute('width'), '')
     div.style.setProperty('height', visual.getAttribute('height'), '')
