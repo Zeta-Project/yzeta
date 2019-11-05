@@ -9,10 +9,10 @@ import {
     LayoutExecutor,
     License, List, OrthogonalEdgeEditingContext,
     Point, PolylineEdgeRouterData,
-    Rect, SimpleNode, Size, SolidColorFill
+    Rect, SimpleNode, Size, SolidColorFill, LabelSnapContext
 } from 'yfiles'
 
-import {bindCommand} from "./utils/Bindings";
+import {bindAction, bindCommand} from "./utils/Bindings";
 import {DragAndDrop_old} from "./DragAndDrop_old";
 import {DragAndDrop} from "./DragAndDrop";
 import * as umlModel from './UMLClassModel.js'
@@ -94,6 +94,7 @@ class YFilesZeta {
         this.registerCommands(graphComponent)
     }
 
+    // TODO: remove unused method
     buildSampleGraph() {
         const graph = graphComponent.graph
         //create a node based on UMLClassModel for storing data and UMLNodeStyle
@@ -138,6 +139,12 @@ class YFilesZeta {
         bindCommand("button[data-command='ZoomOriginal']", ICommand.ZOOM, graphComponent, 1.0)
         bindCommand("button[data-command='Undo']", ICommand.UNDO, graphComponent)
         bindCommand("button[data-command='Redo']", ICommand.REDO, graphComponent)
+
+        bindAction('#snapping-button', () => {
+            const snappingEnabled = document.querySelector('#snapping-button').checked
+            graphComponent.inputMode.snapContext.enabled = snappingEnabled
+            graphComponent.inputMode.labelSnapContext.enabled = snappingEnabled
+        })
     }
 
     async getBrowserData() {
@@ -167,6 +174,9 @@ function createInputMode() {
         allowAddLabel: false,
         allowGroupingOperations: false,
         allowCreateNode: false,
+        labelSnapContext: new LabelSnapContext({
+            enabled: false
+        }),
         snapContext: new GraphSnapContext({
             nodeToNodeDistance: 30,
             nodeToEdgeDistance: 20,
@@ -174,7 +184,8 @@ function createInputMode() {
             snapDistance: 10,
             snapSegmentsToSnapLines: true,
             snapBendsToSnapLines: true,
-            gridSnapType: GridSnapTypes.ALL
+            gridSnapType: GridSnapTypes.ALL,
+            enabled: false
         })
     })
 
