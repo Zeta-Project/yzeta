@@ -465,7 +465,7 @@ body {
     padding: 0 2px;
 }
 
-.toolbar button.labeled[class*='demo-icon'] {
+.toolbar button.labeled[class*='icon'] {
     padding-left: 24px;
     background-position-x: 2px;
 }
@@ -545,4 +545,51 @@ body {
 
 .dndPanelItem {
     margin: 10px auto;
+}
+
+.toolbar input.toggle-button {
+    display: none !important;
+}
+.toolbar input.toggle-button:checked + label {
+    background-color: #dedede;
+}
+.toolbar input.toggle-button:checked:hover + label {
+    background-color: #b2b2b2;
+}
+.toolbar input.toggle-button:disabled + label {
+    opacity: 0.5;
+    cursor: default;
+    background-color: transparent;
+}
+.toolbar input.toggle-button.labeled + label {
+    background-position-x: left;
+    width: inherit;
+    padding: 0 2px;
+    line-height: 24px;
+}
+.toolbar input.toggle-button.labeled + label.icon {
+    width: inherit;
+    padding-left: 24px;
+    padding-right: 4px;
+    line-height: 24px;
+}
+.toolbar input.toggle-button.checked,
+.toolbar input.toggle-button.labeled + label.icon {
+    background-position-x: 2px;
+}
+.toolbar button:active,
+.toolbar > label:active,
+.toolbar .toggle-button:checked:active + label {
+    background-color: #b2b2b2;
+}
+@media screen and (max-width: 960px ) {
+    .toolbar button.demo-unimportant {
+        display: none;
+    }
+}
+.toolbar button:disabled,
+.toolbar > .toggle-button:disabled + label {
+    opacity: 0.5;
+    cursor: default;
+    background-color: transparent;
 }
