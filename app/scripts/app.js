@@ -4,21 +4,29 @@ import {
     Class,
     EdgeRouter,
     EdgeRouterScope,
+    Class, EdgeRouter, EdgeRouterScope, Fill, GridSnapTypes,
     GraphComponent,
     GraphEditorInputMode,
     HierarchicLayout,
     HierarchicLayoutData,
     ICommand,
     INode,
+    GraphEditorInputMode, GraphSnapContext, HierarchicLayout, HierarchicLayoutData,
+    ICommand, INode,
     LayoutExecutor,
     License,
     List,
     OrthogonalEdgeEditingContext,
     PolylineEdgeRouterData,
     Size
+    License, List, OrthogonalEdgeEditingContext,
+    PolylineEdgeRouterData,
+    Size, SolidColorFill, LabelSnapContext
 } from 'yfiles'
 
-import {bindCommand} from "./utils/Bindings";
+import {bindAction, bindCommand} from "./utils/Bindings";
+import {DragAndDrop_old} from "./DragAndDrop_old";
+import {Properties} from "./Properties";
 import {DragAndDrop} from "./DragAndDrop";
 import * as umlModel from './UMLClassModel.js'
 import {UMLNodeStyle} from './UMLNodeStyle.js'
@@ -52,6 +60,19 @@ class YFilesZeta {
 
     initialize() {
 
+//myJson.diagrams[0].name
+        //maybe build configuration object to quickly access attributes
+        //
+        //diagram: show selection of witch project to access --> yfiles inherited methods?
+        //shape: build nodes and edges to show on Palette
+        //style?? suspiciously scarce options
+        //
+        //const text = JSON.stringify(shapeJson.shapes.edges);
+        //console.log("Local JSON: " + text);
+
+
+
+
         graphComponent = new GraphComponent('#graphComponent');
         const graph = graphComponent.graph;
         graph.undoEngineEnabled = true
@@ -70,7 +91,7 @@ class YFilesZeta {
         zetaApiWrapper.getConceptDefinition("d882f50c-7e89-48cf-8fea-1e0ea5feb8b7").then(data => {
             buildGraphFromDefinition(graph, data)
 
-// bootstrap the sample graph
+            // bootstrap the sample graph
             executeLayout().then(() => {
                 // the sample graph bootstrapping should not be undoable
                 graphComponent.graph.undoEngine.clear()
@@ -96,6 +117,29 @@ class YFilesZeta {
         bindCommand("button[data-command='ZoomOriginal']", ICommand.ZOOM, graphComponent, 1.0)
         bindCommand("button[data-command='Undo']", ICommand.UNDO, graphComponent)
         bindCommand("button[data-command='Redo']", ICommand.REDO, graphComponent)
+
+        bindAction('#snapping-button', () => {
+            const snappingEnabled = document.querySelector('#snapping-button').checked
+            graphComponent.inputMode.snapContext.enabled = snappingEnabled
+            graphComponent.inputMode.labelSnapContext.enabled = snappingEnabled
+        })
+        bindAction("button[data-command='Layout']", executeLayout)
+    }
+
+    async getBrowserData() {
+
+        //const jData =
+
+        //const response = await fetch("graphData.json")
+        //const data = await response.json()
+
+        //console.log(data)
+        //console.log(jData.shapes[0])
+
+        //const response = await fetch("http://zeta-dev.syslab.in.htwg-konstanz.de/rest/v1/meta-models");
+        //const jData = await response.json()
+        //const jData = JSON.parse(response)
+        //console.log(jData.toString())
     }
 }
 
@@ -108,7 +152,20 @@ function createInputMode() {
         orthogonalEdgeEditingContext: new OrthogonalEdgeEditingContext(),
         allowAddLabel: false,
         allowGroupingOperations: false,
-        allowCreateNode: false
+        allowCreateNode: false,
+        labelSnapContext: new LabelSnapContext({
+            enabled: false
+        }),
+        snapContext: new GraphSnapContext({
+            nodeToNodeDistance: 30,
+            nodeToEdgeDistance: 20,
+            snapOrthogonalMovement: false,
+            snapDistance: 10,
+            snapSegmentsToSnapLines: true,
+            snapBendsToSnapLines: true,
+            gridSnapType: GridSnapTypes.ALL,
+            enabled: false
+        })
     })
 
     // add input mode that handles the edge creations buttons
@@ -186,9 +243,9 @@ function executeLayout() {
     const layout = new HierarchicLayout({
         orthogonalRouting: true
     })
-    layout.edgeLayoutDescriptor.minimumFirstSegmentLength = 25
-    layout.edgeLayoutDescriptor.minimumLastSegmentLength = 25
-    layout.edgeLayoutDescriptor.minimumDistance = 25
+    layout.edgeLayoutDescriptor.minimumFirstSegmentLength = 100
+    layout.edgeLayoutDescriptor.minimumLastSegmentLength = 100
+    layout.edgeLayoutDescriptor.minimumDistance = 100
 
     const layoutData = new HierarchicLayoutData({
         // mark all inheritance edges (generalization, realization) as directed so their target nodes
@@ -223,8 +280,7 @@ function buildGraphFromDefinition(graph, data) {
         for (let i = 0; i < node.methods.length; i++) {
             methodNames[i] = node.methods[i].name
         }
-
-        nodeList.add(graph.createNode({
+        var tempNode = (graph.createNode({
             style: new UMLNodeStyle(
                 new umlModel.UMLClassModel({
                     className: node.name.toString(),
@@ -233,8 +289,23 @@ function buildGraphFromDefinition(graph, data) {
                 })
             )
         }))
+        if (node.abstractness == true) {
+            const isAbstract = tempNode.style.model.constraint === 'abstract'
+            tempNode.style.model.constraint = isAbstract ? '' : 'abstract'
+            tempNode.style.model.stereotype = ''
+            tempNode.style.fill = isAbstract ? new SolidColorFill(0x60, 0x7d, 0x8b) : Fill.CRIMSON
+        }
+        nodeList.add(tempNode)
         console.log(nodeList.size)
     });
+
+
+
+    graph.nodes.forEach(node => {
+        if ( node.style instanceof UMLNodeStyle) {
+            node.style.adjustSize(node, graphComponent.inputMode)
+        }
+    })
 
     //connect each class
     let source = null;
