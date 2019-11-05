@@ -75,3 +75,14 @@ export function toggleClass(/**Element*/ e, /**string*/ className) {
     }
     return e
 }
+
+/** @return snapping action binding */
+export function bindAction(/**string*/ selector, /**function(Event)*/ action) {
+    const element = document.querySelector(selector)
+    if (!element) {
+        return
+    }
+    element.addEventListener('click', e => {
+        action(e)
+    })
+}

@@ -12,7 +12,7 @@ import {
     Rect, SimpleNode, Size, SolidColorFill
 } from 'yfiles'
 
-import {bindCommand} from "./utils/Bindings";
+import {bindAction, bindCommand} from "./utils/Bindings";
 import {DragAndDrop_old} from "./DragAndDrop_old";
 import {DragAndDrop} from "./DragAndDrop";
 import * as umlModel from './UMLClassModel.js'
@@ -138,6 +138,12 @@ class YFilesZeta {
         bindCommand("button[data-command='ZoomOriginal']", ICommand.ZOOM, graphComponent, 1.0)
         bindCommand("button[data-command='Undo']", ICommand.UNDO, graphComponent)
         bindCommand("button[data-command='Redo']", ICommand.REDO, graphComponent)
+
+        bindAction('#snapping-button', () => {
+            const snappingEnabled = document.querySelector('#snapping-button').checked
+            graphComponent.inputMode.snapContext.enabled = snappingEnabled
+            graphComponent.inputMode.labelSnapContext.enabled = snappingEnabled
+        })
     }
 
     async getBrowserData() {
