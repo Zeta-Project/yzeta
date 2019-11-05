@@ -44,7 +44,7 @@ class YFilesZeta {
 
 
     constructor() {
-        this.getBrowserData();
+        //this.getBrowserData();
         this.initialize();
 
     }
