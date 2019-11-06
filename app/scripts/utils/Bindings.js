@@ -85,4 +85,6 @@ export function bindAction(/**string*/ selector, /**function(Event)*/ action) {
     element.addEventListener('click', e => {
         action(e)
     })
+
+
 }

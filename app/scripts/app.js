@@ -1,29 +1,32 @@
 import 'yfiles/yfiles.css';
 
-import {
-    Class, EdgeRouter, EdgeRouterScope, Fill, GridSnapTypes,
-    FreeNodePortLocationModel,
-    GraphComponent,
-    GraphEditorInputMode, GraphSnapContext, HierarchicLayout, HierarchicLayoutData,
-    ICommand, IGraph as graph, INode,
-    LayoutExecutor,
-    License, List, OrthogonalEdgeEditingContext,
-    Point, PolylineEdgeRouterData,
-    Rect, SimpleNode, Size, SolidColorFill, LabelSnapContext
-} from 'yfiles'
-
 import {bindAction, bindCommand} from "./utils/Bindings";
-import {DragAndDrop_old} from "./DragAndDrop_old";
-import {Properties} from "./Properties";
 import {DragAndDrop} from "./DragAndDrop";
 import * as umlModel from './UMLClassModel.js'
 import {UMLNodeStyle} from './UMLNodeStyle.js'
 import UMLContextButtonsInputMode from './UMLContextButtonsInputMode.js'
 import definition from '../graphData/definition.js'
-//JSON workaround until REST GET functions
-import shapeJson from '../graphData/shape.js';
-import diagramJson from '../graphData/diagram.js';
-import styleJson from '../graphData/style.js';
+import {checkStatus, ZetaApiWrapper} from "./ZetaApiWrapper";
+import {showSnackbar} from "./utils/AppStyle";
+import {
+    Class,
+    EdgeRouter,
+    EdgeRouterScope, Fill, GridSnapTypes,
+    GraphComponent,
+    GraphEditorInputMode,
+    HierarchicLayout,
+    HierarchicLayoutData,
+    ICommand,
+    INode,
+    GraphSnapContext,
+    LayoutExecutor,
+    License,
+    List,
+    OrthogonalEdgeEditingContext,
+    PolylineEdgeRouterData,
+    Size, LabelSnapContext
+} from 'yfiles'
+
 
 // Tell the library about the license contents
 License.value = require('../../../yFiles-for-HTML-Complete-2.2.0.2/lib/license.json');
@@ -42,27 +45,11 @@ let graphComponent = null;
 
 class YFilesZeta {
 
-
     constructor() {
-        //this.getBrowserData();
         this.initialize();
-
     }
 
     initialize() {
-
-//myJson.diagrams[0].name
-        //maybe build configuration object to quickly access attributes
-        //
-        //diagram: show selection of witch project to access --> yfiles inherited methods?
-        //shape: build nodes and edges to show on Palette
-        //style?? suspiciously scarce options
-        //
-        //const text = JSON.stringify(shapeJson.shapes.edges);
-        //console.log("Local JSON: " + text);
-
-
-
 
         graphComponent = new GraphComponent('#graphComponent');
         const graph = graphComponent.graph;
@@ -76,55 +63,24 @@ class YFilesZeta {
         graphComponent.graph.nodeDefaults.size = new Size(125, 100)
 
         // configure and initialize drag and drop panel
+        let dragAndDropPanel = new DragAndDrop(graphComponent);
 
-        let dragAndDropPanel2 = new DragAndDrop(graphComponent);
+        const zetaApiWrapper = new ZetaApiWrapper();
+        zetaApiWrapper.getConceptDefinition("d882f50c-7e89-48cf-8fea-1e0ea5feb8b7").then(data => {
+            buildGraphFromDefinition(graph, data)
 
-        buildGraphFromDefinition(graph)
-        //this.buildSampleGraph();
-
-        // bootstrap the sample graph
-        executeLayout().then(() => {
-            // the sample graph bootstrapping should not be undoable
-            graphComponent.graph.undoEngine.clear()
+            // bootstrap the sample graph
+            executeLayout().then(() => {
+                // the sample graph bootstrapping should not be undoable
+                graphComponent.graph.undoEngine.clear()
+            })
+        }).catch(reason => {
+            alert("Problem to load concept definition: " + reason)
         })
-
         //graphComponent.fitGraphBounds();
 
         // bind toolbar commands
         this.registerCommands(graphComponent)
-    }
-
-    // TODO: remove unused method
-    buildSampleGraph() {
-        const graph = graphComponent.graph
-        //create a node based on UMLClassModel for storing data and UMLNodeStyle
-        const node1 = graph.createNode({
-            style: new UMLNodeStyle(
-                new umlModel.UMLClassModel({
-                    className: 'Customer',
-                    attributes: ['name', 'address', 'email', 'phone', 'creditcardInfo', 'shippingInfo'],
-                    operations: ['register()', 'login()', 'search()']
-                })
-            )
-        })
-
-        const node2 = graph.createNode({
-            style: new UMLNodeStyle(
-                new umlModel.UMLClassModel({
-                    className: 'Customer',
-                    attributes: ['name', 'address', 'email', 'phone', 'creditcardInfo', 'shippingInfo'],
-                    operations: ['register()', 'login()', 'search()']
-                })
-            )
-        })
-
-        const edge1 = graph.createEdge(node1, node2);
-
-        graph.nodes.forEach(node => {
-            if ( node.style instanceof UMLNodeStyle) {
-                node.style.adjustSize(node, graphComponent.inputMode)
-            }
-        })
     }
 
     /**
@@ -132,6 +88,14 @@ class YFilesZeta {
      * @param {GraphComponent} graphComponent
      */
     registerCommands(graphComponent) {
+        bindAction("button[data-command='Save']", () => {
+            const zetaApiWrapper = new ZetaApiWrapper();
+            zetaApiWrapper.postConceptDefinition("d882f50c-7e89-48cf-8fea-1e0ea5feb8b7", JSON.stringify(definition)).then(checkStatus).then(() => {
+                showSnackbar("Metamodel saved successfully!")
+            }).catch(reason => {
+                showSnackbar("Problem to save Metamodel: " + reason)
+            })
+        })
         bindCommand("button[data-command='Cut']", ICommand.CUT, graphComponent)
         bindCommand("button[data-command='Copy']", ICommand.COPY, graphComponent)
         bindCommand("button[data-command='Paste']", ICommand.PASTE, graphComponent)
@@ -145,22 +109,7 @@ class YFilesZeta {
             graphComponent.inputMode.snapContext.enabled = snappingEnabled
             graphComponent.inputMode.labelSnapContext.enabled = snappingEnabled
         })
-    }
-
-    async getBrowserData() {
-
-        //const jData =
-
-        //const response = await fetch("graphData.json")
-        //const data = await response.json()
-
-        //console.log(data)
-        //console.log(jData.shapes[0])
-
-        //const response = await fetch("http://zeta-dev.syslab.in.htwg-konstanz.de/rest/v1/meta-models");
-        //const jData = await response.json()
-        //const jData = JSON.parse(response)
-        //console.log(jData.toString())
+        bindAction("button[data-command='Layout']", executeLayout)
     }
 }
 
@@ -272,7 +221,7 @@ function executeLayout() {
         // mark all inheritance edges (generalization, realization) as directed so their target nodes
         // will be placed above their source nodes
         // all other edges are treated as undirected
-        edgeDirectedness: edge => ( 0),
+        edgeDirectedness: edge => (0),
         // combine all inheritance edges (generalization, realization) in edge groups according to
         // their line type
         // do not group the other edges
@@ -283,23 +232,25 @@ function executeLayout() {
     return graphComponent.morphLayout(layout, '500ms', layoutData)
 }
 
-function buildGraphFromDefinition(graph) {
-    const classes = definition.classes
-    const references = definition.references
+function buildGraphFromDefinition(graph, data) {
+
+    const classes = data.classes
+    const references = data.references
+
     const nodeList = new List()
 
     //create a node for each class
     //fill them with existing attributes, operations and names
-    classes.forEach(function(node) {
-        const attributeNames = new Array()
-        for(let i = 0; i < node.attributes.length; i++) {
+    classes.forEach(function (node) {
+        const attributeNames = []
+        for (let i = 0; i < node.attributes.length; i++) {
             attributeNames[i] = node.attributes[i].name
         }
-        const methodNames = new Array()
-        for(let i = 0; i < node.methods.length; i++) {
+        const methodNames = []
+        for (let i = 0; i < node.methods.length; i++) {
             methodNames[i] = node.methods[i].name
         }
-        var tempNode = (graph.createNode({
+        const tempNode = (graph.createNode({
             style: new UMLNodeStyle(
                 new umlModel.UMLClassModel({
                     className: node.name.toString(),
@@ -307,12 +258,11 @@ function buildGraphFromDefinition(graph) {
                     operations: methodNames
                 })
             )
-        }))
-        if (node.abstractness == true) {
-            const isAbstract = tempNode.style.model.constraint === 'abstract'
-            tempNode.style.model.constraint = isAbstract ? '' : 'abstract'
+        }));
+        if (node.abstractness === true) {
+            tempNode.style.model.constraint = 'abstract'
             tempNode.style.model.stereotype = ''
-            tempNode.style.fill = isAbstract ? new SolidColorFill(0x60, 0x7d, 0x8b) : Fill.CRIMSON
+            tempNode.style.fill = Fill.CRIMSON
         }
         nodeList.add(tempNode)
         console.log(nodeList.size)
@@ -330,19 +280,19 @@ function buildGraphFromDefinition(graph) {
     let source = null;
     let target = null;
     //const nodes = graph.getNodeArray() --> not a function???
-    references.forEach(function(reference) {
-        nodeList.forEach(function(node) {
-            if(node.style.model.className == reference.sourceClassName) {
+    references.forEach(function (reference) {
+        nodeList.forEach(function (node) {
+            if (node.style.model.className === reference.sourceClassName) {
                 source = node
             }
-            if(node.style.model.className == reference.targetClassName) {
+            if (node.style.model.className === reference.targetClassName) {
                 target = node
             }
         })
-        if(source != null && target != null) {
+        if (source != null && target != null) {
             const edge = graph.createEdge(source, target);
             // add a label to the node
-            if(reference.name != '') {
+            if (reference.name !== '') {
                 graph.addLabel(edge, reference.name)
             }
 
@@ -354,7 +304,6 @@ function buildGraphFromDefinition(graph) {
 
 
 }
-
 
 
 /**
