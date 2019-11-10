@@ -1,6 +1,6 @@
 import {
     DragDropEffects,
-    GraphComponent,
+    GraphComponent, INode,
     INodeStyle,
     Insets,
     NodeDropInputMode,
@@ -9,6 +9,7 @@ import {
     SimpleNode,
     SvgExport
 } from "yfiles";
+import {UMLNodeStyle} from "./UMLNodeStyle";
 
 export class Properties {
 
@@ -17,43 +18,74 @@ export class Properties {
     constructor(graphComponent) {
         // retrieve the panel element
         this.divField = document.getElementById('properties-panel')
+        this.graphComponent = graphComponent
+        //check if there already is something to build
+        if(this.graphComponent.currentItem != null) {
+            console.log('drawItConstr')
+            this.item = this.graphComponent.currentItem
+        } else {
+            return
+        }
+        if(INode.isInstance(this.item) && this.item.style instanceof UMLNodeStyle) {
+            this.buildUMLNodeProperties()
+            this.updateProperties()
+        }
 
-        const accordionMeta = document.createElement('button')
-        accordionMeta.className = 'accordion'
-        accordionMeta.innerHTML = 'Attributes'
-        const pMeta = document.createElement('p')
-        pMeta.class = 'panel'
-        pMeta.innerHTML = 'Some Meta Information'
+    }
 
-        const accordionAttributes = document.createElement('button')
-        accordionAttributes.className = 'accordion'
-        accordionAttributes.innerHTML = 'Attributes'
+    get div() {
+        return this.divField
+    }
+    updateProperties() {
+        this.pMeta.innerHTML = this.item.style.model.className
+        this.pAttributes.innerHTML = this.item.style.model.attributes.toString()
+        this.pOperations.innerHTML = this.item.style.model.operations.toString()
 
-        const pAttributes = document.createElement('p')
-        pAttributes.class = 'panel'
-        pAttributes.innerHTML = 'InnerTestP'
+    }
 
-        const accordionOperations = document.createElement('button')
-        accordionOperations.className = 'accordion'
-        accordionOperations.innerHTML = 'Operations'
+    updateVisual() {
+        if(this.graphComponent.currentItem !== null) {
+            this.item = this.graphComponent.currentItem
+        } else {
+            return
+        }
+        if(INode.isInstance(this.item) && this.item.style instanceof UMLNodeStyle) {
+            this.updateProperties()
+        }
+    }
 
-        const pOperations = document.createElement('p')
-        pOperations.class = 'panel'
-        pOperations.innerHTML = 'SomeOperations'
+
+    buildUMLNodeProperties() {
+        this.accordionMeta = document.createElement('button')
+        this.accordionMeta.className = 'accordion'
+        this.accordionMeta.innerHTML = 'Attributes'
+        this.pMeta = document.createElement('p')
+        this.pMeta.class = 'panel'
+
+        this.accordionAttributes = document.createElement('button')
+        this.accordionAttributes.className = 'accordion'
+        this.accordionAttributes.innerHTML = 'Attributes'
+        this.pAttributes = document.createElement('p')
+        this.pAttributes.class = 'panel'
+
+        this.accordionOperations = document.createElement('button')
+        this.accordionOperations.className = 'accordion'
+        this.accordionOperations.innerHTML = 'Operations'
+        this.pOperations = document.createElement('p')
+        this.pOperations.class = 'panel'
 
 
 
-        this.div.appendChild(accordionMeta)
-        this.div.appendChild(pMeta)
-        this.div.appendChild(accordionAttributes)
-        this.div.appendChild(pAttributes)
-        this.div.appendChild(accordionOperations)
-        this.div.appendChild(pOperations)
+        this.div.appendChild(this.accordionMeta)
+        this.div.appendChild(this.pMeta)
+        this.div.appendChild(this.accordionAttributes)
+        this.div.appendChild(this.pAttributes)
+        this.div.appendChild(this.accordionOperations)
+        this.div.appendChild(this.pOperations)
 
         let acc = document.getElementsByClassName('accordion'); //cant find Elements
-        console.log(acc.length)
         for (let i = 0; i < acc.length; i++) {
-            acc[i].addEventListener("click", function() {
+            acc[i].addEventListener("click", function () {
                 /* Toggle between adding and removing the "active" class,
                 to highlight the button that controls the panel */
                 this.classList.toggle("active");
@@ -68,17 +100,8 @@ export class Properties {
             });
         }
     }
-
-    get div() {
-        return this.divField
-    }
-
-
-    updateProperties() {
-
-    }
-
 }
+
 
 /**
  * 1. build empty properties-panel

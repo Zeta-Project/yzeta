@@ -24,8 +24,9 @@ import {
     List,
     OrthogonalEdgeEditingContext,
     PolylineEdgeRouterData,
-    Size, LabelSnapContext
+    Size, LabelSnapContext, Rect
 } from 'yfiles'
+import {Properties} from "./Properties";
 
 
 // Tell the library about the license contents
@@ -64,6 +65,23 @@ class YFilesZeta {
 
         // configure and initialize drag and drop panel
         let dragAndDropPanel = new DragAndDrop(graphComponent);
+
+        const tempNode = (graph.createNode({
+            style: new UMLNodeStyle(
+                new umlModel.UMLClassModel({
+                    className: 'KlassenName',
+                    attributes: ['Attribut1', 'Attribut2'],
+                    operations: ['Operation1', 'Operation2']
+                })
+            )
+        }));
+        graphComponent.currentItem = tempNode
+        let propertyPanel = new Properties(graphComponent);
+
+        //Todo build a itemChangedListener which calls updatePorperties
+        graphComponent.addCurrentItemChangedListener = () => propertyPanel.updateVisual()
+
+
 
         const zetaApiWrapper = new ZetaApiWrapper();
         zetaApiWrapper.getConceptDefinition("d882f50c-7e89-48cf-8fea-1e0ea5feb8b7").then(data => {
@@ -117,7 +135,6 @@ class YFilesZeta {
  * Configure interaction.
  */
 function createInputMode() {
-    console.log("createMode")
     const mode = new GraphEditorInputMode({
         orthogonalEdgeEditingContext: new OrthogonalEdgeEditingContext(),
         allowAddLabel: false,
@@ -165,7 +182,7 @@ function createInputMode() {
 /**
  * Routes all edges that connect to selected nodes. This is used when a selection of nodes is moved or resized.
  */
-function routeEdgesAtSelectedNodes() {
+function routeEdgesAtSelectedNodes(src, args) {
     const edgeRouter = new EdgeRouter()
     edgeRouter.scope = EdgeRouterScope.ROUTE_EDGES_AT_AFFECTED_NODES
 

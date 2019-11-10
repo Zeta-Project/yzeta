@@ -538,6 +538,8 @@ export class UMLNodeStyle extends NodeStyleBase {
         const x = location.x - node.layout.x
         const y = location.y - node.layout.y
 
+        geim.graphComponent.currentItem = args.item
+
         // the vertical relative coordinates of the different interactive parts
         const topAttributesCategory = this.classLabel.preferredSize.height + VERTICAL_SPACING
         const bottomAttributesCategory = topAttributesCategory + this.categoryLabel.preferredSize.height
