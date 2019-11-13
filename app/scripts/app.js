@@ -66,23 +66,12 @@ class YFilesZeta {
         // configure and initialize drag and drop panel
         let dragAndDropPanel = new DragAndDrop(graphComponent);
 
-        const tempNode = (graph.createNode({
-            style: new UMLNodeStyle(
-                new umlModel.UMLClassModel({
-                    className: 'KlassenName',
-                    attributes: ['Attribut1', 'Attribut2'],
-                    operations: ['Operation1', 'Operation2']
-                })
-            )
-        }));
-        graphComponent.currentItem = tempNode
         let propertyPanel = new Properties(graphComponent);
 
-        //Todo build a itemChangedListener which calls updatePorperties
-        graphComponent.addCurrentItemChangedListener = () => propertyPanel.updateVisual()
+        //graphComponent.addCurrentItemChangedListener = () => propertyPanel.updateProperties()
 
 
-
+/*
         const zetaApiWrapper = new ZetaApiWrapper();
         zetaApiWrapper.getConceptDefinition("d882f50c-7e89-48cf-8fea-1e0ea5feb8b7").then(data => {
             buildGraphFromDefinition(graph, data)
@@ -98,6 +87,8 @@ class YFilesZeta {
         //graphComponent.fitGraphBounds();
 
         // bind toolbar commands
+
+ */
         this.registerCommands(graphComponent)
     }
 

@@ -1,113 +1,124 @@
 import {
-    DragDropEffects,
-    GraphComponent, INode,
-    INodeStyle,
-    Insets,
-    NodeDropInputMode,
-    PanelNodeStyle,
-    Rect,
-    SimpleNode,
-    SvgExport
+    INode,
+
 } from "yfiles";
+
 import {UMLNodeStyle} from "./UMLNodeStyle";
 
 export class Properties {
 
-
-
     constructor(graphComponent) {
         // retrieve the panel element
-        this.divField = document.getElementById('properties-panel')
+        this.$container = document.getElementById('properties-panel')
+
         this.graphComponent = graphComponent
-        //check if there already is something to build
-        if(this.graphComponent.currentItem != null) {
-            console.log('drawItConstr')
-            this.item = this.graphComponent.currentItem
-        } else {
-            return
-        }
-        if(INode.isInstance(this.item) && this.item.style instanceof UMLNodeStyle) {
-            this.buildUMLNodeProperties()
-            this.updateProperties()
-        }
+        this.graphComponent.selection.addItemSelectionChangedListener(this.updateProperties)
 
+        //console.log(this.graphComponent)
     }
 
-    get div() {
-        return this.divField
-    }
-    updateProperties() {
-        this.pMeta.innerHTML = this.item.style.model.className
-        this.pAttributes.innerHTML = this.item.style.model.attributes.toString()
-        this.pOperations.innerHTML = this.item.style.model.operations.toString()
-
+    get container() {
+        return this.$container
     }
 
-    updateVisual() {
-        if(this.graphComponent.currentItem !== null) {
-            this.item = this.graphComponent.currentItem
-        } else {
-            return
+    updateProperties(sender, args) {
+        console.log(sender)
+        let container = this.container
+        if (args == null) return;
+
+        let item = args.item
+
+        if (INode.isInstance(item) && item.style instanceof UMLNodeStyle) {
+            //There is a node and it is type of UMLNodeStyle
+            if(container.length === 0) {
+                container = buildUMLNodeProperties(item.style.model, container)
+            }
+            this.foo()
         }
-        if(INode.isInstance(this.item) && this.item.style instanceof UMLNodeStyle) {
-            this.updateProperties()
-        }
+    }
+    foo() {
+        updateUMLNodeProperties(this.container)
     }
 
 
-    buildUMLNodeProperties() {
-        this.accordionMeta = document.createElement('button')
-        this.accordionMeta.className = 'accordion'
-        this.accordionMeta.innerHTML = 'Attributes'
-        this.pMeta = document.createElement('p')
-        this.pMeta.class = 'panel'
-
-        this.accordionAttributes = document.createElement('button')
-        this.accordionAttributes.className = 'accordion'
-        this.accordionAttributes.innerHTML = 'Attributes'
-        this.pAttributes = document.createElement('p')
-        this.pAttributes.class = 'panel'
-
-        this.accordionOperations = document.createElement('button')
-        this.accordionOperations.className = 'accordion'
-        this.accordionOperations.innerHTML = 'Operations'
-        this.pOperations = document.createElement('p')
-        this.pOperations.class = 'panel'
-
-
-
-        this.div.appendChild(this.accordionMeta)
-        this.div.appendChild(this.pMeta)
-        this.div.appendChild(this.accordionAttributes)
-        this.div.appendChild(this.pAttributes)
-        this.div.appendChild(this.accordionOperations)
-        this.div.appendChild(this.pOperations)
-
-        let acc = document.getElementsByClassName('accordion'); //cant find Elements
-        for (let i = 0; i < acc.length; i++) {
-            acc[i].addEventListener("click", function () {
-                /* Toggle between adding and removing the "active" class,
-                to highlight the button that controls the panel */
-                this.classList.toggle("active");
-
-                /* Toggle between hiding and showing the active panel */
-                let panel = this.nextElementSibling;
-                if (panel.style.display === "block") {
-                    panel.style.display = "none";
-                } else {
-                    panel.style.display = "block";
-                }
-            });
-        }
-    }
 }
 
+function updateUMLNodeProperties(container) {
+
+    container.pMeta.class = model.className
+    container.pAttributes.class = model.attributes
+}
+
+function buildUMLNodeProperties(model, container) {
+
+    let accordionMeta = document.createElement('button')
+    accordionMeta.className = 'accordion'
+    accordionMeta.innerHTML = 'Attributes'
+    let pMeta = document.createElement('p')
+    pMeta.class = model.className
+
+    let accordionAttributes = document.createElement('button')
+    accordionAttributes.className = 'accordion'
+    accordionAttributes.innerHTML = 'Attributes'
+    let pAttributes = document.createElement('p')
+    pAttributes.class = model.attributes
+
+    let accordionOperations = document.createElement('button')
+    accordionOperations.className = 'accordion'
+    accordionOperations.innerHTML = 'Operations'
+    let pOperations = document.createElement('p')
+    pOperations.class = model.operations
+
+
+    container.appendChild(accordionMeta)
+    container.appendChild(pMeta)
+    container.appendChild(accordionAttributes)
+    container.appendChild(pAttributes)
+    container.appendChild(accordionOperations)
+    container.appendChild(pOperations)
+
+    let acc = document.getElementsByClassName('accordion'); //cant find Elements
+    for (let i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+            /* Toggle between adding and removing the "active" class,
+            to highlight the button that controls the panel */
+            this.classList.toggle("active");
+
+            /* Toggle between hiding and showing the active panel */
+            let panel = this.nextElementSibling;
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+            }
+        });
+    }
+    return container
+}
 
 /**
  * 1. build empty properties-panel
  * 2. onClick Node -> send node
  * 3. build apropriate accordion
  *
+ *
+ *
+ //check if there already is something to build
+ if(this.graphComponent.currentItem != null) {
+            console.log('drawItConstr')
+            this.item = this.graphComponent.currentItem
+        } else {
+            return
+        }
+ if(INode.isInstance(this.item) && this.item.style instanceof UMLNodeStyle) {
+            this.buildUMLNodeProperties()
+            this.updateProperties()
+        }
+ *
+ *
+ *         this.pMeta.innerHTML = this.item.style.model.className
+ this.pAttributes.innerHTML = this.item.style.model.attributes.toString()
+ this.pOperations.innerHTML = this.item.style.model.operations.toString()
  *
  *  <button class="accordion">Section 1</button>
  <div class="panel">
