@@ -63,6 +63,8 @@ class YFilesZeta {
         graphComponent.graph.nodeDefaults.shareStyleInstance = false
         graphComponent.graph.nodeDefaults.size = new Size(125, 100)
 
+        YFilesZeta.buldSampleGraph(graph)
+
         // configure and initialize drag and drop panel
         let dragAndDropPanel = new DragAndDrop(graphComponent);
         let propertyPanel = new Properties(graphComponent);
@@ -72,6 +74,8 @@ class YFilesZeta {
             //if (INode.isInstance(args.item) && args.item.style instanceof UMLNodeStyle)
             propertyPanel.updateProperties(src, args)
         })
+
+
 
 /*
         const zetaApiWrapper = new ZetaApiWrapper();
@@ -121,6 +125,20 @@ class YFilesZeta {
             graphComponent.inputMode.labelSnapContext.enabled = snappingEnabled
         })
         bindAction("button[data-command='Layout']", executeLayout)
+    }
+
+    static buldSampleGraph(graph) {
+        let node = graph.createNode({
+            style: new UMLNodeStyle(
+                new umlModel.UMLClassModel({
+                    className: 'TestName',
+                    attributes: ['FirstAttribute', 'second'],
+                    operations: ['OperationZero', 'OperationSecond']
+                })
+            )
+        })
+        node.style.adjustSize(node, graphComponent.inputMode)
+        executeLayout()
     }
 }
 

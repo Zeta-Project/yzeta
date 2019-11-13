@@ -630,6 +630,12 @@ body {
     overflow: hidden;
     transition: max-height 0.2s ease-out;
 }
+.input {
+    padding: 18px;
+    background-color: black;
+    margin-left: 5px;
+    max-width: 10px;
+}
 
 /* ------------------------------
 Beginning of the snackbar styling
