@@ -65,11 +65,13 @@ class YFilesZeta {
 
         // configure and initialize drag and drop panel
         let dragAndDropPanel = new DragAndDrop(graphComponent);
-
         let propertyPanel = new Properties(graphComponent);
 
-        //graphComponent.addCurrentItemChangedListener = () => propertyPanel.updateProperties()
-
+        //Question: Why does this work but the bottom one doesn't? -> graphComponent.selection.addItemSelectionChangedListener(propertyPanel.updateProperties)
+        graphComponent.selection.addItemSelectionChangedListener((src, args) => {
+            //if (INode.isInstance(args.item) && args.item.style instanceof UMLNodeStyle)
+            propertyPanel.updateProperties(src, args)
+        })
 
 /*
         const zetaApiWrapper = new ZetaApiWrapper();

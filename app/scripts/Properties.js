@@ -9,48 +9,54 @@ export class Properties {
 
     constructor(graphComponent) {
         // retrieve the panel element
-        this.$container = document.getElementById('properties-panel')
+        this.divField = document.getElementById('properties-panel')
 
         this.graphComponent = graphComponent
-        this.graphComponent.selection.addItemSelectionChangedListener(this.updateProperties)
-
+        //this.graphComponent.selection.addItemSelectionChangedListener(this.updateProperties)
         //console.log(this.graphComponent)
     }
 
-    get container() {
-        return this.$container
+    get div() {
+        return this.divField
+    }
+    set div(div) {
+        this.divField = div
     }
 
     updateProperties(sender, args) {
-        console.log(sender)
-        let container = this.container
-        if (args == null) return;
+        console.log('update')
+        let div = this.div
+
+        if (args == null) {
+
+            return;
+        }
+
 
         let item = args.item
+        let model = item.style.model
 
         if (INode.isInstance(item) && item.style instanceof UMLNodeStyle) {
             //There is a node and it is type of UMLNodeStyle
-            if(container.length === 0) {
-                container = buildUMLNodeProperties(item.style.model, container)
+            if (!div.hasChildNodes()) {
+                this.div = buildUMLNodeProperties(model, div)
             }
-            this.foo()
         }
+        //updateUMLNodeProperties(model, div)
     }
-    foo() {
-        updateUMLNodeProperties(this.container)
-    }
-
-
 }
 
-function updateUMLNodeProperties(container) {
+
+
+function updateUMLNodeProperties(model, container) {
 
     container.pMeta.class = model.className
     container.pAttributes.class = model.attributes
+
 }
 
 function buildUMLNodeProperties(model, container) {
-
+console.log('building')
     let accordionMeta = document.createElement('button')
     accordionMeta.className = 'accordion'
     accordionMeta.innerHTML = 'Attributes'
