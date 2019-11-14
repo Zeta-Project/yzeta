@@ -538,7 +538,9 @@ export class UMLNodeStyle extends NodeStyleBase {
         const x = location.x - node.layout.x
         const y = location.y - node.layout.y
 
-        geim.graphComponent.currentItem = args.item
+        //Todo decide if hard selection or listener. Current Listener: app.js (selectionChangedListener) -> probably better to use in input mode?!
+        geim.graphComponent.selection.selectedNodes.clear()
+        geim.graphComponent.selection.selectedNodes.setSelected(args.item, true)
 
         // the vertical relative coordinates of the different interactive parts
         const topAttributesCategory = this.classLabel.preferredSize.height + VERTICAL_SPACING
