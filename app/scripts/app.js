@@ -27,6 +27,7 @@ import {
     Size, LabelSnapContext, Rect
 } from 'yfiles'
 import {Properties} from "./Properties";
+import Exporter from "./exportMetaModel/Exporter"
 
 
 // Tell the library about the license contents
@@ -63,7 +64,13 @@ class YFilesZeta {
         graphComponent.graph.nodeDefaults.shareStyleInstance = false
         graphComponent.graph.nodeDefaults.size = new Size(125, 100)
 
-        YFilesZeta.buldSampleGraph(graph)
+        this.buldSampleGraph(graph)
+
+
+
+        const exporter = new Exporter(graph);
+        console.log(exporter.export())
+
 
         // configure and initialize drag and drop panel
         let dragAndDropPanel = new DragAndDrop(graphComponent);
@@ -127,7 +134,7 @@ class YFilesZeta {
         bindAction("button[data-command='Layout']", executeLayout)
     }
 
-    static buldSampleGraph(graph) {
+    buldSampleGraph(graph) {
         let node = graph.createNode({
             style: new UMLNodeStyle(
                 new umlModel.UMLClassModel({
@@ -138,6 +145,19 @@ class YFilesZeta {
             )
         })
         node.style.adjustSize(node, graphComponent.inputMode)
+
+        let node2 = graph.createNode({
+            style: new UMLNodeStyle(
+                new umlModel.UMLClassModel({
+                    className: 'TestName',
+                    attributes: ['FirstAttribute', 'second'],
+                    operations: ['OperationZero', 'OperationSecond']
+                })
+            )
+        })
+        node2.style.adjustSize(node, graphComponent.inputMode)
+
+        graph.createEdge(node,node2)
         executeLayout()
     }
 }

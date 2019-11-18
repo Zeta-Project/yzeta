@@ -1,7 +1,8 @@
-import mEnum from '../mEnum';
 import ExportedMetaModel from './ExportedMetaModel';
 import Graph from './Graph';
 import ValidationResult from './ValidationResult';
+import {UMLNodeStyle} from "../UMLNodeStyle";
+//import graph from 'yfiles'
 
 
 export default (function() {
@@ -25,13 +26,13 @@ export default (function() {
     let exportedModel, validationResult;
     exportedModel = new ExportedMetaModel;
     validationResult = this.checkValidity();
-    exportedModel.setValid(validationResult.isValid());
-    exportedModel.setMessages(validationResult.getMessages());
+    //exportedModel.setValid(validationResult.isValid());
+    //exportedModel.setMessages(validationResult.getMessages());
     if (validationResult.isValid()) {
       exportedModel.setClasses(this.createClasses());
       exportedModel.setReferences(this.createReferences());
       //exportedModel.setEnums(this.createEnums());
-      exportedModel.setEnums([]);
+      //exportedModel.setEnums([]);
       //exportedModel.setAttributes(this.createAttributes());
       exportedModel.setAttributes([]);
       //exportedModel.setMethods(this.createMethods());
@@ -49,11 +50,7 @@ export default (function() {
   Exporter.prototype.checkValidity = function() {
     let attribute, key, validationResult, _i, _j, _len, _len1, _ref, _ref1;
     validationResult = new ValidationResult;
-    _ref = this.graph.getDuplicateKeys();
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      key = _ref[_i];
-      validationResult.addErrorMessage("Duplicate key '" + key + "'");
-    }
+
     _ref1 = this.graph.getDuplicateAttributes();
     for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
       attribute = _ref1[_j];
@@ -63,22 +60,22 @@ export default (function() {
   };
 
   Exporter.prototype.createClasses = function() {
-    let classes, element, _i, _len, _ref;
+    let classes;
     classes = [];
-    _ref = this.graph.getElements();
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      element = _ref[_i];
-      classes.push({
-        name: this.graph.getName(element),
-        description: this.graph.getDescription(element),
-        abstractness: this.graph.isAbstract(element),
-        superTypeNames: this.graph.getSuperTypes(element),
-        attributes: this.graph.getAttributes(element),
-        methods: this.graph.getEntityMethods(element),
-        inputReferenceNames: this.graph.getInputs(element),
-        outputReferenceNames: this.graph.getOutputs(element)
-      });
-    }
+    this.graph.getElements().forEach(element => {
+      if ( element.style instanceof UMLNodeStyle) {
+        classes.push({
+          name: this.graph.getName(element),
+          description: this.graph.getDescription(element),
+          abstractness: this.graph.isAbstract(element),
+          superTypeNames: this.graph.getSuperTypes(element),
+          attributes: this.graph.getAttributes(element),
+          methods: this.graph.getEntityMethods(element),
+          inputReferenceNames: this.graph.getInputs(element),
+          outputReferenceNames: this.graph.getOutputs(element)
+        });
+      }
+    })
     return classes;
   };
 
@@ -86,26 +83,27 @@ export default (function() {
     let reference, references, _i, _len, _ref;
     references = [];
     _ref = this.graph.getReferences();
+console.log(_ref)
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       reference = _ref[_i];
       references.push({
         name: this.graph.getName(reference),
         description: "",
-        sourceDeletionDeletesTarget: this.graph.getSourceDeletionDeletesTarget(reference),
-        targetDeletionDeletesSource: this.graph.getTargetDeletionDeletesSource(reference),
-        attributes: this.graph.getAttributes(reference),
-        methods: this.graph.getEntityMethods(reference),
+        sourceDeletionDeletesTarget: "", //Todo check if this is necessary
+        targetDeletionDeletesSource: "",
+        attributes: [],//this.graph.getAttributes(reference),
+        methods: [],//this.graph.getEntityMethods(reference),
         sourceClassName: this.graph.getSourceName(reference),
         targetClassName: this.graph.getTargetName(reference),
-        sourceLowerBounds: reference.attributes.linkdef_source[0]?.lowerBound || 0,
-        sourceUpperBounds: reference.attributes.linkdef_source[0]?.upperBound || -1,
-        targetLowerBounds: reference.attributes.linkdef_target[0]?.lowerBound || 0,
-        targetUpperBounds: reference.attributes.linkdef_target[0]?.upperBound || -1,
+        sourceLowerBounds: 0,//reference.attributes.linkdef_source[0]?.lowerBound || 0,
+        sourceUpperBounds: -1,//reference.attributes.linkdef_source[0]?.upperBound || -1,
+        targetLowerBounds: 0,//reference.attributes.linkdef_target[0]?.lowerBound || 0,
+        targetUpperBounds: -1,//reference.attributes.linkdef_target[0]?.upperBound || -1,
       });
     }
     return references;
   };
-
+/*
   Exporter.prototype.createEnums = function() {
     let enums, thisMEnum, _i, _len, _ref;
     enums = [];
@@ -164,6 +162,6 @@ export default (function() {
     }
     return methods;
   };
-
+*/
   return Exporter;
 })();

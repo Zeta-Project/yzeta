@@ -1,7 +1,8 @@
 import mCoreUtil from '../utils/mCoreUtil';
-import mEnum from '../mEnum';
+//import mEnum from '../mEnum';
 import Constants from './Constants';
 import Attribute from './Attribute';
+//import graph from 'yfiles'
 
 /*
   Wrapper class around the internal JointJS graph.
@@ -14,11 +15,10 @@ export default (function() {
 
   /*
     Returns all elements (which are real elements by MoDiGen metamodel semantics).
+
    */
   Graph.prototype.getElements = function() {
-    return this.graph.getElements().filter(function(element) {
-      return mCoreUtil.isElement(element);
-    });
+    return this.graph.nodes
   };
 
   /*
@@ -26,7 +26,7 @@ export default (function() {
    */
   Graph.prototype.getElementNames = function() {
     return this.getElements().map(function(element) {
-      return element.attributes.name;
+      return element.className;
     });
   };
 
@@ -34,17 +34,15 @@ export default (function() {
     Returns all references (which are real references by MoDiGen metamodel semantics).
    */
   Graph.prototype.getReferences = function() {
-    return this.graph.getEdgeArray().filter(function(edge) {
-      return mCoreUtil.isReference(edge);
-    });
+    return this.graph.edges
   };
 
   /*
-     Returns the names of all references.
+     Returns the index of all references.
    */
   Graph.prototype.getReferenceNames = function() {
     return this.getReferences().map(function(reference) {
-      return reference.attributes.name;
+      return reference.index;
     });
   };
 
@@ -52,15 +50,22 @@ export default (function() {
     Returns the name of the given cell.
    */
   Graph.prototype.getName = function(cell) {
-    return cell.attributes.name;
+    let result;
+    result = cell.className;
+    if(result === "" || typeof result !== 'string') {
+      return "";
+    } else {
+      return result;
+    }
   };
 
   /*
     Returns the name of the given cell.
+    Todo currently returns className, check if description is needed
    */
   Graph.prototype.getDescription = function(cell) {
     let result;
-    result = cell.attributes.description;
+    result = cell.className;
     if (result === "" || typeof result !== 'string') {
       return "";
     }
@@ -68,7 +73,7 @@ export default (function() {
 
   /*
     Returns all element-, reference and enum-names which are assigned more than once.
-   */
+
   Graph.prototype.getDuplicateKeys = function() {
     let duplicateKeys, key, keys, _i, _len, _ref;
     keys = [];
@@ -85,9 +90,11 @@ export default (function() {
     return duplicateKeys;
   };
 
+   */
+
   /*
     Returns all attribute keys which are assigned more than once insinde an element.
-   */
+
   Graph.prototype.getDuplicateAttributes = function() {
     let attribute, attributes, cell, duplicateAttributes, key, _i, _j, _len, _len1, _ref, _ref1;
     duplicateAttributes = [];
@@ -110,6 +117,11 @@ export default (function() {
     }
     return duplicateAttributes;
   };
+   */
+  //Todo check for duplicate attributes inside each node instead across all attributes
+  Graph.prototype.getDuplicateAttributes = function() {
+    return []
+  }
 
   /*
     Checks whether the element is abstract.
@@ -120,7 +132,7 @@ export default (function() {
 
   /*
     Returns all superTypes of the given element (which is defined by the generalization reference type).
-   */
+
   Graph.prototype.getSuperTypes = function(element) {
     return this.graph.getConnectedLinks(element, {
       outbound: true
@@ -130,13 +142,22 @@ export default (function() {
       return this.graph.getCell(link.attributes.target.id).attributes.name;
     }), this);
   };
+  */
+  Graph.prototype.getSuperTypes = function(element) {
+    let superTypeNames = []
+    for (let edge in element.inEdges) {
+      superTypeNames.push(edge.source.className)
+    }
+    return superTypeNames
+  }
+
 
   /*
     Returns the attributes of the cell.
     Default value is parsed from String because the inspector can't display the correct input
     based on the selected type, because the type is in a List
     See: http://stackoverflow.com/questions/37742721/display-field-based-on-another-in-jointjs
-   */
+
   Graph.prototype.getAttributes = function(cell) {
     let attributes, key, mAttributes, value, _i, _len, _ref;
     mAttributes = [];
@@ -159,6 +180,16 @@ export default (function() {
     }
     return mAttributes;
   };
+   */
+  //Todo check if [Key] or Constants.field.ATTRIBUTES is necessary
+  Graph.prototype.getAttributes = function(node) {
+    if(node.attributes !== null) {
+      return node.attributes
+    } else {
+      return []
+    }
+
+  }
 
   /*
    Convert a attribute type into json
@@ -216,7 +247,7 @@ export default (function() {
 
   /*
     Returns the methods of the cell.
-   */
+
   Graph.prototype.getEntityMethods = function(cell) {
     let attributes, key, mMethods, value, _i, _len, _ref;
     mMethods = [];
@@ -233,6 +264,11 @@ export default (function() {
     }
     return mMethods;
   };
+*/
+  //Todo check how to ise Constants.field.METHODS
+  Graph.prototype.getEntityMethods = function(node) {
+    return node.operations
+  }
 
   Graph.prototype.isNumeric = function(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
@@ -240,7 +276,7 @@ export default (function() {
 
   /*
     Returns all input references of the element.
-   */
+
   Graph.prototype.getInputs = function(element) {
     return this.graph.getConnectedLinks(element, {
       inbound: true
@@ -250,49 +286,53 @@ export default (function() {
       input.attributes.name
     );
   };
+  */
+  //Todo mCoreUtil need to check validity like above (getInputs)
+  Graph.prototype.getInputs = function(element) {
+    if(element.inEdges) {
+      return (element.inEdges.map(() => element.className))
+    } else {
+      return []
+    }
 
-  /*
-    Returns all output references of the element.
-   */
+  }
+
+  //Todo mCoreUtil need to check validity
   Graph.prototype.getOutputs = function(element) {
-    return this.graph.getConnectedLinks(element, {
-      outbound: true
-    }).filter(function(link) {
-      return mCoreUtil.isReference(link);
-    }).map(output =>
-      output.attributes.name
-    );
-  };
+    if(element.outEdges) {
+      return element.outEdges.map(() => element.className)
+    } else {
+      return []
+    }
+  }
 
   /*
     Returns all source classes of the reference.
    */
   Graph.prototype.getSourceName = function(reference) {
-    const source = this.graph.getCell(reference.attributes.source.id);
-    return source.attributes.name;
+    return reference.source.className
   };
 
   /*
     Returns all target classes of the reference.
    */
   Graph.prototype.getTargetName = function(reference) {
-    const target = this.graph.getCell(reference.attributes.target.id);
-    return target.attributes.name;
+    return reference.target.className
   };
 
   /*
     Returns the sourceDeletionDeletesTarget value of the reference.
-   */
+
   Graph.prototype.getSourceDeletionDeletesTarget = function(reference) {
     return reference.attributes[Constants.field.SOURCE_DELETION_DELETES_TARGET] || false;
   };
 
-  /*
+
     Returns the targetDeletionDeletesSource value of the reference.
-   */
+
   Graph.prototype.getTargetDeletionDeletesSource = function(reference) {
     return reference.attributes[Constants.field.TARGET_DELETION_DELETES_SOURCE] || false;
   };
-
+*/
   return Graph;
 })();
