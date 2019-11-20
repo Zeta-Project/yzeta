@@ -64,12 +64,10 @@ export default (function() {
   };
 
   Exporter.prototype.createClasses = function() {
-
-    let names = this.graph.getNodeNames()
-    console.log(names)
     let classes;
     classes = [];
-    this.graph.getNodes().forEach(node => {
+    let nodes = this.graph.getNodes()
+    nodes.forEach(node => {
       classes.push({
           name: this.graph.getName(node),
           description: this.graph.getDescription(node),
@@ -85,27 +83,25 @@ export default (function() {
   };
 
   Exporter.prototype.createReferences = function() {
-    let reference, references, _i, _len, _ref;
-    references = [];
-    _ref = this.graph.getReferences();
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      reference = _ref[_i];
-      references.push({
-        name: this.graph.getName(reference),
+    let edges = []
+    let ret = this.graph.getReferences()
+    ret.forEach(edge => {
+      edges.push({
+        name: this.graph.getName(edge),
         description: "",
         sourceDeletionDeletesTarget: "", //Todo check if this is necessary
         targetDeletionDeletesSource: "",
-        attributes: [],//this.graph.getAttributes(reference),
-        methods: [],//this.graph.getEntityMethods(reference),
-        sourceClassName: this.graph.getSourceName(reference),
-        targetClassName: this.graph.getTargetName(reference),
+        attributes: [],//this.graph.getAttributes(edge),
+        methods: [],//this.graph.getEntityMethods(edge),
+        sourceClassName: this.graph.getSourceName(edge),
+        targetClassName: this.graph.getTargetName(edge),
         sourceLowerBounds: 0,//reference.attributes.linkdef_source[0]?.lowerBound || 0,
         sourceUpperBounds: -1,//reference.attributes.linkdef_source[0]?.upperBound || -1,
         targetLowerBounds: 0,//reference.attributes.linkdef_target[0]?.lowerBound || 0,
         targetUpperBounds: -1,//reference.attributes.linkdef_target[0]?.upperBound || -1,
       });
-    }
-    return references;
+    })
+    return edges;
   };
 /*
   Exporter.prototype.createEnums = function() {

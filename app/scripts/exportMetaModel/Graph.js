@@ -1,4 +1,5 @@
 import {UMLNodeStyle} from "../UMLNodeStyle";
+import graph from 'yfiles'
 
 /*
   Wrapper class around the internal yfiles graph.
@@ -12,33 +13,38 @@ export default (function() {
   /*
     Returns all nodes (which are nodes of type UMLSNodeStyle).
    */
-  //const result = words.filter(word => word.length > 6);
   Graph.prototype.getNodes = function() {
-    return this.graph.nodes.filter(node => node.style instanceof UMLNodeStyle);
+    let nodes = []
+    this.graph.nodes.forEach(node => nodes.push(node))
+    nodes = nodes.filter(node => node.style instanceof UMLNodeStyle)
+    return nodes
   };
 
   /*
     Returns the names of all nodes.
    */
   Graph.prototype.getNodeNames = function() {
-    return this.getNodes().map((node) => {
-      return node.style.model.className
-    });
+    let nodes = this.getNodes()
+    let names = nodes.forEach(node => node.style.model.className)
+
+    return names
   };
 
   /*
     Returns all references
    */
   Graph.prototype.getReferences = function() {
-    return this.graph.edges
+    let edges = []
+    this.graph.edges.forEach(edge => edges.push(edge))
+    return edges
   };
 
   /*
      Returns the index of all references.
    */
   Graph.prototype.getReferenceNames = function() {
-    return this.getReferences().map(function(reference) {
-      return reference.index;
+    return this.getReferences().map(function(edge) {
+      return edge.index;
     });
   };
 
@@ -47,6 +53,7 @@ export default (function() {
    */
   Graph.prototype.getName = function(node) {
     let result;
+    if(!(node instanceof UMLNodeStyle)) return ""
     result = node.style.model.className;
     if(result === "" || typeof result !== 'string') {
       return "";
@@ -182,15 +189,15 @@ export default (function() {
   /*
     Returns all source classes of the reference.
    */
-  Graph.prototype.getSourceName = function(reference) {
-    return reference.source.className
+  Graph.prototype.getSourceName = function(edge) {
+    return edge.sourceNode.style.model.className
   };
 
   /*
     Returns all target classes of the reference.
    */
   Graph.prototype.getTargetName = function(reference) {
-    return reference.target.className
+    return reference.targetNode.style.model.className
   };
 
   /*
