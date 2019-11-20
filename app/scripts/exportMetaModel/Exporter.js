@@ -31,6 +31,8 @@ export default (function() {
     if (validationResult.isValid()) {
       exportedModel.setClasses(this.createClasses());
       exportedModel.setReferences(this.createReferences());
+
+      //Todo check if enuMs are needed, also compare to yfiles enuMs
       //exportedModel.setEnums(this.createEnums());
       //exportedModel.setEnums([]);
       //exportedModel.setAttributes(this.createAttributes());
@@ -50,31 +52,34 @@ export default (function() {
   Exporter.prototype.checkValidity = function() {
     let attribute, key, validationResult, _i, _j, _len, _len1, _ref, _ref1;
     validationResult = new ValidationResult;
-
+/*
     _ref1 = this.graph.getDuplicateAttributes();
     for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
       attribute = _ref1[_j];
-      validationResult.addErrorMessage("Duplicate attribute '" + (attribute.getAttributeKey()) + "' in cell '" + (attribute.getCellName()) + "'");
+      validationResult.addErrorMessage("Duplicate attribute '" + (attribute.getAttributeKey()) + "' in " +
+          " '" + (attribute.getCellName()) + "'");
     }
+ */
     return validationResult;
   };
 
   Exporter.prototype.createClasses = function() {
+
+    let names = this.graph.getNodeNames()
+    console.log(names)
     let classes;
     classes = [];
-    this.graph.getElements().forEach(element => {
-      if ( element.style instanceof UMLNodeStyle) {
-        classes.push({
-          name: this.graph.getName(element),
-          description: this.graph.getDescription(element),
-          abstractness: this.graph.isAbstract(element),
-          superTypeNames: this.graph.getSuperTypes(element),
-          attributes: this.graph.getAttributes(element),
-          methods: this.graph.getEntityMethods(element),
-          inputReferenceNames: this.graph.getInputs(element),
-          outputReferenceNames: this.graph.getOutputs(element)
+    this.graph.getNodes().forEach(node => {
+      classes.push({
+          name: this.graph.getName(node),
+          description: this.graph.getDescription(node),
+          abstractness: this.graph.isAbstract(node),
+          superTypeNames: this.graph.getSuperTypes(node),
+          attributes: this.graph.getAttributes(node),
+          methods: this.graph.getEntityMethods(node),
+          inputReferenceNames: this.graph.getInputs(node),
+          outputReferenceNames: this.graph.getOutputs(node)
         });
-      }
     })
     return classes;
   };
@@ -83,7 +88,6 @@ export default (function() {
     let reference, references, _i, _len, _ref;
     references = [];
     _ref = this.graph.getReferences();
-console.log(_ref)
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       reference = _ref[_i];
       references.push({

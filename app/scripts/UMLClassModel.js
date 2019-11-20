@@ -21,6 +21,8 @@ export class UMLClassModel {
     }
 
     constructor(data) {
+        this.description = (data && data.description) || ''
+        this.abstract = (data && data.abstract) || false
         this.stereotype = (data && data.stereotype) || '' //if data && data.stereotype != null, use data.stereotype. else ''
         this.constraint = (data && data.constraint) || ''
         this.className = (data && data.className) || 'UML Class Node'

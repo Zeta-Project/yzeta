@@ -3,6 +3,7 @@
  *
  * @type {{isElement, isGeneralization, isReference, isAbstract, isMEnumContainer}}
  */
+//Todo check each element for datatype in yfiles env
 export default (function () {
 
     const ELEMENT_TYPES = ['uml.Class', 'uml.Abstract'];
@@ -74,7 +75,8 @@ export default (function () {
                 check = REFERENCE_TYPES.indexOf(link) !== -1;
                 break;
             case 'object':
-                check = REFERENCE_TYPES.indexOf(link.attributes.type) !== -1;
+                check = true
+                //check = REFERENCE_TYPES.indexOf(link.attribute.type) !== -1;
         }
 
         return check;
@@ -94,7 +96,8 @@ export default (function () {
                 check = ABSTRACT_TYPES.indexOf(element) !== -1;
                 break;
             case 'object':
-                check = ABSTRACT_TYPES.indexOf(element.attributes.type) !== -1;
+                check = true
+                //check = ABSTRACT_TYPES.indexOf(element.attributes.type) !== -1;
         }
 
         return check;
@@ -115,7 +118,8 @@ export default (function () {
                 check = element === M_ENUM_CONTAINER_TYPE;
                 break;
             case 'object':
-                check = element.attributes.type === M_ENUM_CONTAINER_TYPE;
+                return true
+                //check = element.attributes.type === M_ENUM_CONTAINER_TYPE;
         }
 
         return check;
@@ -136,7 +140,8 @@ export default (function () {
                 check = element === M_ATTRIBUTE_CONTAINER_TYPE;
                 break;
             case 'object':
-                check = element.attributes.type === M_ATTRIBUTE_CONTAINER_TYPE;
+                check = trueS
+                //check = element.attributes.type === M_ATTRIBUTE_CONTAINER_TYPE;
         }
 
         return check;

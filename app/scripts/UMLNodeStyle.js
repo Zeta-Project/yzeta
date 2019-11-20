@@ -351,7 +351,6 @@ export class UMLNodeStyle extends NodeStyleBase {
      * @param {GraphEditorInputMode} geim The responsible input mode.
      */
     adjustSize(node, geim) {
-        console.log("size adjusting")
         const layout = node.layout
         const minSize = this.getPreferredSize(node)
         const width = Math.max(minSize.width, layout.width)
@@ -615,7 +614,7 @@ export class UMLNodeStyle extends NodeStyleBase {
             return
         }
 
-        geim.inputModeContext.canvasComponent.currentItem = node
+        //geim.inputModeContext.canvasComponent.currentItem = node
         geim.inputModeContext.canvasComponent.invalidate()
         args.handled = true
     }

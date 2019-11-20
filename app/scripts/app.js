@@ -24,7 +24,7 @@ import {
     List,
     OrthogonalEdgeEditingContext,
     PolylineEdgeRouterData,
-    Size, LabelSnapContext, Rect
+    Size, LabelSnapContext, Rect, Edge
 } from 'yfiles'
 import {Properties} from "./Properties";
 import Exporter from "./exportMetaModel/Exporter"
@@ -63,6 +63,32 @@ class YFilesZeta {
         //clone or share styleInstance
         graphComponent.graph.nodeDefaults.shareStyleInstance = false
         graphComponent.graph.nodeDefaults.size = new Size(125, 100)
+
+        let node = graph.createNode({
+            style: new UMLNodeStyle(
+                new umlModel.UMLClassModel({
+                    className: 'FirstNode',
+                    attributes: ['ATTR', 'height'],
+                    operations: ['OP1', 'OP2']
+                })
+            )
+        })
+        node.style.adjustSize(node, graphComponent.inputMode)
+
+        let node2 = graph.createNode({
+            style: new UMLNodeStyle(
+                new umlModel.UMLClassModel({
+                    className: 'SecondNode',
+                    attributes: ['FirstAttribute', 'second'],
+                    operations: ['OperationZero', 'OperationSecond']
+                })
+            )
+        })
+        node2.style.adjustSize(node, graphComponent.inputMode)
+        let edge1 = graph.createEdge(node,node2)
+        let edge2 = graph.createEdge(node2,node)
+        executeLayout()
+
 
         this.buldSampleGraph(graph)
 
@@ -135,30 +161,7 @@ class YFilesZeta {
     }
 
     buldSampleGraph(graph) {
-        let node = graph.createNode({
-            style: new UMLNodeStyle(
-                new umlModel.UMLClassModel({
-                    className: 'TestName',
-                    attributes: ['FirstAttribute', 'second'],
-                    operations: ['OperationZero', 'OperationSecond']
-                })
-            )
-        })
-        node.style.adjustSize(node, graphComponent.inputMode)
 
-        let node2 = graph.createNode({
-            style: new UMLNodeStyle(
-                new umlModel.UMLClassModel({
-                    className: 'TestName',
-                    attributes: ['FirstAttribute', 'second'],
-                    operations: ['OperationZero', 'OperationSecond']
-                })
-            )
-        })
-        node2.style.adjustSize(node, graphComponent.inputMode)
-
-        graph.createEdge(node,node2)
-        executeLayout()
     }
 }
 

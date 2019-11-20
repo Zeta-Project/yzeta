@@ -1,11 +1,11 @@
-/*
-Todo import yfiles enum, make sure attributes and methods are needed additionally to model.attributes
+
+//Todo import yfiles enum, make sure attributes and methods are needed additionally to model.attributes
 
 
 
 import joint from 'jointjs';
 
-import graph from 'yfiles'
+//import graph from 'yfiles'
 
 export default (function () {
     'use strict';
@@ -86,4 +86,3 @@ export default (function () {
 
 })();
 
- */
