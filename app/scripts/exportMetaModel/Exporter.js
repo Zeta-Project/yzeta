@@ -1,8 +1,6 @@
 import ExportedMetaModel from './ExportedMetaModel';
 import Graph from './Graph';
 import ValidationResult from './ValidationResult';
-import {UMLNodeStyle} from "../UMLNodeStyle";
-//import graph from 'yfiles'
 
 
 export default (function() {

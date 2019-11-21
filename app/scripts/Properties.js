@@ -49,43 +49,81 @@ export class Properties {
 
     buildUMLNodeProperties(model, container) {
         let div = container
+        //build metapanel
         let accordionMeta = document.createElement('button')
         accordionMeta.className = 'accordion'
         accordionMeta.innerHTML = 'MetaInformation'
         let pMeta = document.createElement('p')
         pMeta.class = 'panel'
-        let titleBox = document.createElement("INPUT");
-        titleBox.setAttribute("type", "text");
-        titleBox.setAttribute("value", model.className);
-        titleBox.class = "input"
-        titleBox.oninput = function(){
-            console.log(model.className = titleBox.value)
-        }
-        pMeta.appendChild(titleBox)
 
+        //name
+        let nameLabel = document.createTextNode("Name")
+        pMeta.appendChild(nameLabel)
+        let name = document.createElement("INPUT");
+        name.setAttribute("type", "text");
+        name.setAttribute("value", model.className);
+        name.class = "input"
+        name.oninput = function(){
+            console.log(model.className = name.value)
+        }
+        pMeta.appendChild(name)
+
+        //description
+        let descriptionLabel = document.createTextNode("Description")
+        pMeta.appendChild(descriptionLabel)
+        let description = document.createElement("INPUT");
+        description.setAttribute("type", "text");
+        description.setAttribute("value", model.description);
+        description.class = "input"
+        description.oninput = function(){
+            console.log(model.description = description.value)
+        }
+        pMeta.appendChild(description)
+
+        //abstractness
+        //Todo add beautiful icons like in UML
+
+        //attributespanel
         let accordionAttributes = document.createElement('button')
         accordionAttributes.className = 'accordion'
         accordionAttributes.innerHTML = 'Attributes'
         let pAttributes = document.createElement('p')
         pAttributes.class = 'panel'
+        //label
+        let attributesLabel = document.createTextNode("Attributes")
+        pAttributes.appendChild(attributesLabel)
+        //for each attribute
+        let attributes = []
         for(let i = 0; i < model.attributes.length; i++) {
+            attributes.push(model.attributes[i])
             let textBox = document.createElement("INPUT");
             textBox.setAttribute("type", "text");
-            textBox.setAttribute("value", model.attributes[i].toString())
+            textBox.setAttribute("value", model.attributes[i].name)
             textBox.oninput = function(){
                 model.attributes[i] = textBox.value
             }
             pAttributes.appendChild(textBox);
+            //add relevant checkboxes
+            let localUniqueBox = document.createElement("input")
+            localUniqueBox.type = "checkbox"
+            localUniqueBox.text = "LocalUnique"
+            localUniqueBox.onchange = function() {
+                if(localUniqueBox.checked) model.attributes[i].localUnique
+            }
+            pAttributes.appendChild(localUniqueBox);
         }
 
+        //pAttributes.className = model.attributes.toString()
 
-        pAttributes.className = model.attributes.toString()
-
+        //operationspanel
         let accordionOperations = document.createElement('button')
         accordionOperations.className = 'accordion'
         accordionOperations.innerHTML = 'Operations'
         let pOperations = document.createElement('p')
         pOperations.class = 'panel'
+        //label
+        let operationsLabel = document.createTextNode("Operations")
+        pOperations.appendChild(operationsLabel)
         for(let i = 0; i < model.operations.length; i++) {
             let textBox = document.createElement("INPUT");
             textBox.setAttribute("type", "text");

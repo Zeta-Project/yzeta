@@ -1,3 +1,4 @@
+//Todo check if classes are better located inside UMLClassModel
 export default {
     name: "",
     globalUnique: false,

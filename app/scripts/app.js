@@ -28,6 +28,7 @@ import {
 } from 'yfiles'
 import {Properties} from "./Properties";
 import Exporter from "./exportMetaModel/Exporter"
+import Attribute from "./exportMetaModel/Attribute";
 
 
 // Tell the library about the license contents
@@ -64,39 +65,10 @@ class YFilesZeta {
         graphComponent.graph.nodeDefaults.shareStyleInstance = false
         graphComponent.graph.nodeDefaults.size = new Size(125, 100)
 
-        let node = graph.createNode({
-            style: new UMLNodeStyle(
-                new umlModel.UMLClassModel({
-                    className: 'FirstNode',
-                    attributes: ['ATTR', 'height'],
-                    operations: ['OP1', 'OP2']
-                })
-            )
-        })
-        node.style.adjustSize(node, graphComponent.inputMode)
-
-        let node2 = graph.createNode({
-            style: new UMLNodeStyle(
-                new umlModel.UMLClassModel({
-                    className: 'SecondNode',
-                    attributes: ['FirstAttribute', 'second'],
-                    operations: ['OperationZero', 'OperationSecond']
-                })
-            )
-        })
-        node2.style.adjustSize(node, graphComponent.inputMode)
-        let edge1 = graph.createEdge(node,node2)
-        let edge2 = graph.createEdge(node2,node)
-        executeLayout()
-
-
         this.buldSampleGraph(graph)
-
-
 
         const exporter = new Exporter(graph);
         console.log(exporter.export())
-
 
         // configure and initialize drag and drop panel
         let dragAndDropPanel = new DragAndDrop(graphComponent);
@@ -108,13 +80,10 @@ class YFilesZeta {
             propertyPanel.updateProperties(src, args)
         })
 
-
-
 /*
         const zetaApiWrapper = new ZetaApiWrapper();
         zetaApiWrapper.getConceptDefinition("d882f50c-7e89-48cf-8fea-1e0ea5feb8b7").then(data => {
             buildGraphFromDefinition(graph, data)
-
             // bootstrap the sample graph
             executeLayout().then(() => {
                 // the sample graph bootstrapping should not be undoable
@@ -124,9 +93,7 @@ class YFilesZeta {
             alert("Problem to load concept definition: " + reason)
         })
         //graphComponent.fitGraphBounds();
-
         // bind toolbar commands
-
  */
         this.registerCommands(graphComponent)
     }
@@ -161,7 +128,31 @@ class YFilesZeta {
     }
 
     buldSampleGraph(graph) {
+        let node = graph.createNode({
+            style: new UMLNodeStyle(
+                new umlModel.UMLClassModel({
+                    className: 'FirstNode',
+                    attributes: ["ATTR", "Another One"
+                    ],
+                    operations: ['OP1', 'OP2']
+                })
+            )
+        })
+        node.style.adjustSize(node, graphComponent.inputMode)
 
+        let node2 = graph.createNode({
+            style: new UMLNodeStyle(
+                new umlModel.UMLClassModel({
+                    className: 'SecondNode',
+                    attributes: ['FirstAttribute', 'second'],
+                    operations: ['OperationZero', 'OperationSecond']
+                })
+            )
+        })
+        node2.style.adjustSize(node, graphComponent.inputMode)
+        let edge1 = graph.createEdge(node,node2)
+        let edge2 = graph.createEdge(node2,node)
+        executeLayout()
     }
 }
 
