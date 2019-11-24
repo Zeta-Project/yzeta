@@ -8,7 +8,7 @@ export default (function() {
     this.messages = null;
     this.classes = null;
     this.references = null;
-    this.enums = null;
+    //this.enums = null;
     this.attributes = null;
     this.methods = null;
   }

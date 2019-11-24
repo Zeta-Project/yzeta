@@ -28,8 +28,8 @@ import {
 } from 'yfiles'
 import {Properties} from "./Properties";
 import Exporter from "./exportMetaModel/Exporter"
-import Attribute from "./exportMetaModel/Attribute";
-
+import {Attribute} from "./utils/Attribute";
+import {Operation} from "./utils/Operation";
 
 // Tell the library about the license contents
 License.value = require('../../../yFiles-for-HTML-Complete-2.2.0.2/lib/license.json');
@@ -37,7 +37,6 @@ License.value = require('../../../yFiles-for-HTML-Complete-2.2.0.2/lib/license.j
 // We need to load the yfiles/view-layout-bridge module explicitly to prevent the webpack
 // tree shaker from removing this dependency which is needed for 'morphLayout' in this demo.
 Class.ensure(LayoutExecutor);
-
 
 /**
  * A simple yFiles application that creates a GraphComponent and enables basic input gestures.
@@ -132,9 +131,8 @@ class YFilesZeta {
             style: new UMLNodeStyle(
                 new umlModel.UMLClassModel({
                     className: 'FirstNode',
-                    attributes: ["ATTR", "Another One"
-                    ],
-                    operations: ['OP1', 'OP2']
+                    operations: [new Operation(), new Operation],
+                    attributes: [new Attribute(), new Attribute()]
                 })
             )
         })
@@ -144,8 +142,8 @@ class YFilesZeta {
             style: new UMLNodeStyle(
                 new umlModel.UMLClassModel({
                     className: 'SecondNode',
-                    attributes: ['FirstAttribute', 'second'],
-                    operations: ['OperationZero', 'OperationSecond']
+                    operations: [new Operation({name: "OP1"}), new Operation({name:"OPERATION"})],
+                    attributes: [new Attribute({name: "Attr"}), new Attribute({name: "Attribute2"})]
                 })
             )
         })
@@ -200,7 +198,6 @@ function createInputMode() {
             args.item.style.nodeClicked(src, args)
         }
     })
-
     return mode
 }
 
@@ -270,7 +267,6 @@ function executeLayout() {
         sourceGroupIds: edge => getGroupId(edge, 'src'),
         targetGroupIds: edge => getGroupId(edge, 'tgt')
     })
-
     return graphComponent.morphLayout(layout, '500ms', layoutData)
 }
 
@@ -278,7 +274,6 @@ function buildGraphFromDefinition(graph, data) {
 
     const classes = data.classes
     const references = data.references
-
     const nodeList = new List()
 
     //create a node for each class
@@ -337,16 +332,11 @@ function buildGraphFromDefinition(graph, data) {
             if (reference.name !== '') {
                 graph.addLabel(edge, reference.name)
             }
-
         }
         source = null
         target = null
-
     })
-
-
 }
-
 
 /**
  * Returns an edge group id according to the edge style.
