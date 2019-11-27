@@ -131,8 +131,8 @@ class YFilesZeta {
             style: new UMLNodeStyle(
                 new umlModel.UMLClassModel({
                     className: 'FirstNode',
-                    operations: [new Operation(), new Operation],
-                    attributes: [new Attribute(), new Attribute()]
+                    operations: ["OPER", "SECONDPOPR"],//[new Operation(), new Operation],
+                    attributes: ["ATR", "nextAttr"]//[new Attribute(), new Attribute()]
                 })
             )
         })
@@ -142,8 +142,8 @@ class YFilesZeta {
             style: new UMLNodeStyle(
                 new umlModel.UMLClassModel({
                     className: 'SecondNode',
-                    operations: [new Operation({name: "OP1"}), new Operation({name:"OPERATION"})],
-                    attributes: [new Attribute({name: "Attr"}), new Attribute({name: "Attribute2"})]
+                    operations: ["OPOP", "NexOP"],//[new Operation({name: "OP1"}), new Operation({name:"OPERATION"})],
+                    attributes: ["ATTR", "Secondatr"]//[new Attribute({name: "Attr"}), new Attribute({name: "Attribute2"})]
                 })
             )
         })
